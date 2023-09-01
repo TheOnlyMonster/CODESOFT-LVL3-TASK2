@@ -3,6 +3,17 @@
   font-family: "Rubik", sans-serif;
   font-family: "Work Sans", sans-serif;
 }
+input {
+  padding: 5px 10px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border: 0;
+  outline: 1px solid #2266cc;
+}
+
 html,
 body,
 div,

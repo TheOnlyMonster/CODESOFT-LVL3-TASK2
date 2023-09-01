@@ -12,10 +12,9 @@ const ProductItem = ({ product }) => {
           <Link to={`/products/${product._id}`}>
             <span className="material-symbols-outlined">info_i</span>
           </Link>
-
-        <button>
+        <Link to={`/add-to-cart/${product._id}`}>
           <span className="material-symbols-outlined">add_shopping_cart</span>
-        </button>
+          </Link>
       </Card>
     </li>
   );

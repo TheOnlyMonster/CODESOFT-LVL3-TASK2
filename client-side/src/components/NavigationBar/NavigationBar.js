@@ -1,7 +1,8 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import Container from "../Container/Container";
 import styles from "./NavigationBar.module.css";
 const NavigationBar = () => {
+  const location = useLocation();
   return (
     <>
       <Container>
@@ -12,7 +13,8 @@ const NavigationBar = () => {
               internship
             </li>
             <li>
-              <span className="material-symbols-outlined">person</span> Login/Register
+              <span className="material-symbols-outlined">person</span>{" "}
+              Login/Register
             </li>
           </ul>
         </header>
@@ -34,12 +36,15 @@ const NavigationBar = () => {
           </li>
         </ul>
         <ul className={styles.nav}>
-          <li>Home</li>
-          <li>
+          <li className={location.pathname === "/" ? styles.active : ""}>Home</li>
+          <li className={location.pathname === "/products" ? styles.active : ""}>
             <Link to="/products">Products</Link>
           </li>
           <li>About Us</li>
           <li>Orders</li>
+          <li className={location.pathname === "/add-product" ? styles.active : ""}>
+            <Link to="/add-product">Add Product</Link>
+          </li>
         </ul>
       </Container>
       <Outlet />
