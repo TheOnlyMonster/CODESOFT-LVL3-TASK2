@@ -5,8 +5,22 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
 app.use(bodyParser.json());
+
+const shopRouter = require("./routes/shop");
 const Product = require("./models/product");
 const User = require("./models/user");
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+app.use(shopRouter);
+
+
 mongoose
   .connect(DB_URL)
   .then(() => {
