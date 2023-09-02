@@ -14,16 +14,18 @@ export default function PopUpForm(props) {
     if (props.type === "mixed") {
       data = new FormData();
       for (const formProp of props.formData) {
-        
         data.append(formProp.name, formProp.value);
       }
+    }else {
+      data = props.formData;
+      console.log(data);
     }
     try {
       const headers = props.type === "json" ? { headers: { "Content-Type": "application/json" } } : {}
       const res = await fetch(props.action, {
         method: props.method,
         body: props.type === "mixed" ? data : JSON.stringify(props.formData),
-        headers
+        ...headers
       });
       if (res.status === 422) {
         const errors = await res.json();

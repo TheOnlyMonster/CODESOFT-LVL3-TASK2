@@ -1,8 +1,8 @@
 import useInputValidation from "../../hooks/useInputValidation";
 import styles from "../PopUpForm/PopUpForm.module.css";
 import PopUpForm from "../PopUpForm/PopUpForm";
-import { useNavigate } from "react-router-dom";
-const AuthForm = () => {
+import { Link, useNavigate } from "react-router-dom";
+const SignInForm = () => {
   const navigate = useNavigate();
   const [
     email,
@@ -23,27 +23,17 @@ const AuthForm = () => {
     handlePasswordFocus,
     passwordValidation,
   ] = useInputValidation([]);
-  function handleSubmit(setServerError) {
+  function handleValidation() {
     if (
       !emailValidation().isValid ||
       !passwordValidation().isValid
     ) {
-      return;
+      return false;
     }
-    const data = {
-      email,
-      password,
-    }
-    fetch("http://localhost:5000/sign-in", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      }
-    })
+    return true;
   }
   return (
-    <PopUpForm onSubmit={handleSubmit} action="http://localhost:5000/sign-in" method="POST">
+    <PopUpForm handleValidation={handleValidation} action="http://localhost:5000/sign-in" method="POST" type="json" formData={{ email, password }} handleOk={() => navigate("/")} >
       <label key={"email"}>
         <input
           className={!emailValidation().isValid ? styles.error : ""}
@@ -76,6 +66,9 @@ const AuthForm = () => {
           <p>{passwordValidation().errorMessage}</p>
         )}
       </label>
+      <label>
+        <Link to="/sign-up">Don't have an account? Sign up</Link>
+      </label>
       <button type="submit">Sign In</button>
       <button type="button" onClick={() => navigate("/")}>
           Close
@@ -84,4 +77,4 @@ const AuthForm = () => {
   );
 };
 
-export default AuthForm;
+export default SignInForm;
