@@ -1,6 +1,6 @@
 const Product = require("../models/product");
 const { validationResult } = require("express-validator");
-const PER_PAGE = 5;
+const PER_PAGE = 10;
 const getAllProducts = async (req, res, next) => {
   const page = req.query.page || 1;
   const skip = (page - 1) * PER_PAGE;

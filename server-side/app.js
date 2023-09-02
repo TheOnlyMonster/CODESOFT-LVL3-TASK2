@@ -14,7 +14,11 @@ const storage = multer.diskStorage({
   },
 });
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "image/jpg") {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg"
+  ) {
     cb(null, true);
   } else {
     cb(null, false);
@@ -23,6 +27,7 @@ const fileFilter = (req, file, cb) => {
 app.use(multer({ storage, fileFilter }).single("image"));
 app.use(bodyParser.json());
 const shopRouter = require("./routes/shop");
+const authRouter = require("./routes/auth");
 const Product = require("./models/product");
 const User = require("./models/user");
 
@@ -35,6 +40,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
+app.use(authRouter);
 app.use(shopRouter);
 
 app.use((error, req, res, next) => {

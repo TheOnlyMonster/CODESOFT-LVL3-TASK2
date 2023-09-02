@@ -12,7 +12,6 @@ const Pagination = (props) => {
 
     // Helper function to add a page link
   const addPageLink = (page) => {
-      console.log(page, currentPage);
       const isCurrentPage = +page === +currentPage;
       const linkClassName = isCurrentPage ? styles.active : "";
       pageLinks.push(

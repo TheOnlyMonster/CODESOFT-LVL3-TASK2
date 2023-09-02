@@ -13,8 +13,10 @@ const NavigationBar = () => {
               internship
             </li>
             <li>
-              <span className="material-symbols-outlined">person</span>{" "}
-              Login/Register
+              <Link to="/sign-in">
+                <span className="material-symbols-outlined">person</span>{" "}
+                Login/Register
+              </Link>
             </li>
           </ul>
         </header>
@@ -36,13 +38,21 @@ const NavigationBar = () => {
           </li>
         </ul>
         <ul className={styles.nav}>
-          <li className={location.pathname === "/" ? styles.active : ""}>Home</li>
-          <li className={location.pathname === "/products" ? styles.active : ""}>
+          <li className={location.pathname === "/" ? styles.active : ""}>
+            Home
+          </li>
+          <li
+            className={location.pathname === "/products" ? styles.active : ""}
+          >
             <Link to="/products">Products</Link>
           </li>
           <li>About Us</li>
           <li>Orders</li>
-          <li className={location.pathname === "/add-product" ? styles.active : ""}>
+          <li
+            className={
+              location.pathname === "/add-product" ? styles.active : ""
+            }
+          >
             <Link to="/add-product">Add Product</Link>
           </li>
         </ul>

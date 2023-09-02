@@ -43,6 +43,12 @@ ul {
   gap: 25px;
   font-weight: bold;
 }
+.header a{
+    display: flex;
+    align-items: center;
+    letter-spacing: 1.5px;
+    gap: 5px;
+}
 li {
   display: flex;
   align-items: center;

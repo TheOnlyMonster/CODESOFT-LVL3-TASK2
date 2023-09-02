@@ -28,7 +28,7 @@ const Products = () => {
       ) : (
         <Transition>
             <ProductList products={products} />
-            <Pagination productsCount={productsCount} currentPage={currentPage} pageItems={5} />
+            <Pagination productsCount={productsCount} currentPage={currentPage} pageItems={10} />
         </Transition>
       )}
     </Container>
@@ -51,7 +51,6 @@ const loader = async ({ request }) => {
     }
     const data = await response.json();
     data.currentPage = searchTerm;
-    console.log(data)
     return data;
   } catch (error) {
     return error;
