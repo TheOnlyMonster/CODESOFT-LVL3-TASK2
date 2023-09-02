@@ -2,6 +2,7 @@ import { useState } from "react";
 const useInputValidation = (errors) => {
   const [input, setInput] = useState("");
   const [isBlur, setIsBlur] = useState(false);
+
   function handleInput(e) {
     if (e.target.files) {
       setInput(e.target.files[0]);
@@ -26,7 +27,6 @@ const useInputValidation = (errors) => {
     if (input === "") {
       return { isValid: false, errorMessage: "This field is required" };
     }
-
     for (const error of errors) {
       if (!input.match(error.regex)) {
         return { isValid: false, errorMessage: error.errorMessage };

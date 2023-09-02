@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import Card from "../Card/Card";
 const ProductItem = ({ product }) => {
+  const s = "uploads\\"
   return (
     <li>
       <Card>
-        <img src={product.image} alt={product.title} />
+        <img src={require(`../../uploads/${product.image.split("uploads\\")[1]}`)} alt={product.title} />
         <h2>{product.title}</h2>
         <p>{product.description}</p>
         <p>{product.price}$</p>

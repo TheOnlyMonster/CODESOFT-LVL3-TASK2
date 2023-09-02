@@ -2,8 +2,10 @@ import { Form, useNavigate } from "react-router-dom";
 import Transition from "../../components/Transition/Transition";
 import styles from "./AddProduct.module.css";
 import useInputValidation from "../../hooks/useInputValidation";
+import { useState } from "react";
 const AddProduct = () => {
   const navigate = useNavigate();
+  const [serverError, setServerError] = useState({ val: false, msg: "" });
   const [
     image,
     handleImage,
@@ -22,6 +24,10 @@ const AddProduct = () => {
       regex: /^[a-zA-Z0-9\s]+$/,
       errorMessage: "Only letters and numbers are allowed",
     },
+    {
+      regex: /^(?=.{3,})[a-zA-Z0-9\s]+$/,
+      errorMessage: "Title must be at least 3 characters long",
+    }
   ]);
   const [
     price,
@@ -46,24 +52,28 @@ const AddProduct = () => {
       regex: /^[a-zA-Z0-9\s]+$/,
       errorMessage: "Only letters and numbers are allowed",
     },
+    {
+      regex: /^(?=.{10,})[a-zA-Z0-9\s]+$/,
+      errorMessage: "Description must be at least 10 characters long",
+    }
   ]);
   function handleImageValidation() {
     return imageValidation((image) => {
       if (!image) {
         return { isValid: false, errorMessage: "This field is required" };
       }
-      if (image.type === "image/jpeg" || image.type === "image/png") {
+      if (image.type === "image/jpeg" || image.type === "image/png" || image.type === "image/jpg") {
         return { isValid: true };
       }
       return {
         isValid: false,
-        errorMessage: "Only jpg and png images are allowed",
+        errorMessage: "Only jpg and jpeg and png images are allowed",
       };
     });
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(
+    if (
       !titleValidation().isValid ||
       !priceValidation().isValid ||
       !descriptionValidation().isValid ||
@@ -76,24 +86,35 @@ const AddProduct = () => {
     formData.append("price", price);
     formData.append("description", description);
     formData.append("image", image);
-    console.log(formData);
-    // try {
-    //   const res = await fetch("/add-product", {
-    //     method: "POST",
-    //     body: formData,
-    //   });
-    //   if (res.ok) {
-    //     navigate("/");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      const res = await fetch("http://localhost:5000/add-product", {
+        method: "POST",
+        body: formData,
+      });
+      if (res.status === 422) {
+        const errors = await res.json();
+        throw errors;
+      }
+      if (res.ok) {
+        setServerError({ val: false, msg: "" });
+        navigate("/products");
+      }
+    } catch (error) {
+      if (error.statusCode === 422) {
+        setServerError({ val: true, msg: error.msg });
+      } else {
+        // ...
+      }
+    }
   };
   return (
     <Transition>
       <div className={styles.popup}>
         <div className={styles["popup-inner"]}>
           <Form action="/add-product" method="post" onSubmit={handleSubmit}>
+            {serverError.val && (
+              <input disabled className={styles.error} value={serverError.msg} />
+            )}
             <label key={"title"}>
               <input
                 className={!titleValidation().isValid ? styles.error : ""}

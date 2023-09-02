@@ -4,6 +4,7 @@ import ProductItemSkeleton from "../../components/Skeletons/ProductItemSkeleton"
 import Container from "../../components/Container/Container";
 import Transition from "../../components/Transition/Transition";
 const Products = () => {
+
   const products = useLoaderData();
   const navigation = useNavigation();
   const skeletons = [];
