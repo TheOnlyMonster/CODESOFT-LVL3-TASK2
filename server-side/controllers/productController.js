@@ -1,10 +1,16 @@
 const Product = require("../models/product");
 const { validationResult } = require("express-validator");
+const PER_PAGE = 5;
 const getAllProducts = async (req, res, next) => {
+  const page = req.query.page || 1;
+  const skip = (page - 1) * PER_PAGE;
   try {
-    const products = await Product.find();
-    console.log(products);
-    res.status(200).json(products);
+    const productsCount = await Product.countDocuments();
+    const products = await Product.find().skip(skip).limit(PER_PAGE);
+    res.status(200).json({
+      products,
+      productsCount,
+    });
   } catch (error) {
     next(error);
   }

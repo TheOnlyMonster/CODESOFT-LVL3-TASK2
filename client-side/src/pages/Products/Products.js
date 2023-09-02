@@ -3,9 +3,9 @@ import ProductList from "../../components/ProductsList/ProductsList";
 import ProductItemSkeleton from "../../components/Skeletons/ProductItemSkeleton";
 import Container from "../../components/Container/Container";
 import Transition from "../../components/Transition/Transition";
+import Pagination from "../../components/Pagination/Pagination";
 const Products = () => {
-
-  const products = useLoaderData();
+  const { products, productsCount, currentPage } = useLoaderData();
   const navigation = useNavigation();
   const skeletons = [];
   if (navigation.state === "loading") {
@@ -27,24 +27,32 @@ const Products = () => {
         </div>
       ) : (
         <Transition>
-          <ProductList products={products} />
+            <ProductList products={products} />
+            <Pagination productsCount={productsCount} currentPage={currentPage} pageItems={5} />
         </Transition>
       )}
     </Container>
   );
 };
-const loader = async () => {
+const loader = async ({ request }) => {
   try {
-    const response = await fetch("http://localhost:5000/products", {
+    const clientUrl = new URL(request.url);
+    const searchTerm = clientUrl.searchParams.get("page") || 1;
+    const url = `http://localhost:5000/products?page=${searchTerm}`;
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
     });
-    if (!response.ok) throw new Error(response.statusText);
-    const products = await response.json();
-    return products;
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const data = await response.json();
+    data.currentPage = searchTerm;
+    console.log(data)
+    return data;
   } catch (error) {
     return error;
   }
