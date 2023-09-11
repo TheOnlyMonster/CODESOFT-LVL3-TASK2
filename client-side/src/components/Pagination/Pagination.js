@@ -1,12 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./Pagination.module.css";
 
 const Pagination = (props) => {
   const PER_PAGE = props.pageItems;
   const lastPage = Math.ceil(props.productsCount / PER_PAGE);
   const currentPage = props.currentPage;
-
+  const location = useLocation();
     const pageLinks = [];
     const visiblePages = 3; // Number of pages to show around the current page
 
@@ -16,7 +16,7 @@ const Pagination = (props) => {
       const linkClassName = isCurrentPage ? styles.active : "";
       pageLinks.push(
         <li key={page}>
-          <Link to={`/products?page=${page}`} className={linkClassName}>{page}</Link>
+          <Link to={`${location.pathname}?page=${page}`} className={linkClassName}>{page}</Link>
         </li>
       );
     };

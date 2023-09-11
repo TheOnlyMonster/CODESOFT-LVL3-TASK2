@@ -1,24 +1,43 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProductList from "../../components/ProductsList/ProductsList";
 import ProductItemSkeleton from "../../components/Skeletons/ProductItemSkeleton";
 import Container from "../../components/Container/Container";
 import Transition from "../../components/Transition/Transition";
 import Pagination from "../../components/Pagination/Pagination";
 import styles from "./Products.module.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts } from "../../store/products-actions";
+import { getAllProducts, getAllPrice } from "../../store/products-actions";
 const Products = () => {
   const dispatch = useDispatch();
-  const { products, productsCount, currentPage, highestPrice, lowestPrice, isLoading } = useSelector((state) => state.products);
+  const navigate = useNavigate();
+  const location = useLocation()
+  const {
+    products,
+    productsCount,
+    currentPage,
+    highestPrice,
+    lowestPrice,
+    isLoading,
+  } = useSelector((state) => state.products);
+  const [price, setPrice] = useState([lowestPrice, highestPrice]);
+  const handleFiltering = () => {
+    navigate("/products/price/");
+    dispatch(getAllPrice(page, price));
+  };
   function useQuery() {
-    return new URLSearchParams(useLocation().search);
+    return new URLSearchParams(location.search);
   }
   const query = useQuery();
   const page = query.get("page") || 1;
   useEffect(() => {
-    dispatch(getAllProducts(page));
-  },[page, dispatch])
+    if (location.pathname === "/products/price/") {
+      dispatch(getAllPrice(page, price));
+    } else {
+      dispatch(getAllProducts(page));
+    }
+    setPrice([lowestPrice, highestPrice]);
+  }, [page, dispatch, lowestPrice, highestPrice]);
   const skeletons = [];
   if (isLoading) {
     for (let i = 0; i < 10; i++) {
@@ -39,7 +58,14 @@ const Products = () => {
         </div>
       ) : (
         <Transition className={styles.products}>
-          <ProductList products={products} highestPrice={highestPrice} lowestPrice={lowestPrice}>
+          <ProductList
+            products={products}
+            highestPrice={highestPrice}
+            lowestPrice={lowestPrice}
+            price={price}
+            setPrice={setPrice}
+            handleFiltering={handleFiltering}
+          >
             <div className={styles.results}>
               <h1>Results</h1>
               <div>

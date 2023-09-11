@@ -1,10 +1,8 @@
 import { Button, Slider, Typography } from "@mui/material";
 import ProductItem from "../ProductItem/ProductItem";
 import styles from "./ProductList.module.css";
-import { useState } from "react";
 
 const ProductList = (props) => {
-  const [value1, setValue1] = useState([props.lowestPrice, props.highestPrice]);
   function valueText(value) {
     return `${value}`;
   }
@@ -19,9 +17,15 @@ const ProductList = (props) => {
     );
 
     if (activeThumb === 0) {
-      setValue1([Math.min(newValue1, value1[1] - minDistance), value1[1]]);
+      props.setPrice([
+        Math.min(newValue1, props.price[1] - minDistance),
+        props.price[1],
+      ]);
     } else {
-      setValue1([value1[0], Math.max(newValue2, value1[0] + minDistance)]);
+      props.setPrice([
+        props.price[0],
+        Math.max(newValue2, props.price[0] + minDistance),
+      ]);
     }
   };
   return props.products.length === 0 ? (
@@ -34,7 +38,7 @@ const ProductList = (props) => {
             <h2>Filter by price</h2>
             <Slider
               getAriaLabel={() => "Minimum distance"}
-              value={value1}
+              value={props.price}
               onChange={handleChange1}
               valueLabelDisplay="auto"
               getAriaValueText={valueText}
@@ -49,11 +53,15 @@ const ProductList = (props) => {
                 alignItems: "center",
               }}
             >
-              <Button variant="outlined" id="button-addon2">
+              <Button
+                variant="outlined"
+                id="button-addon2"
+                onClick={props.handleFiltering}
+              >
                 Filter
               </Button>
               <Typography className="ms-auto" variant="h7">
-                Price : ${value1[0]} — ${value1[1]}{" "}
+                Price : ${props.price[0]} — ${props.price[1]}{" "}
               </Typography>
             </div>
           </li>
