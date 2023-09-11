@@ -17,7 +17,7 @@ const useInputValidation = (errors) => {
     setIsBlur(false);
   }
 
-  function isInputValid(fn) {
+  const isInputValid = (fn) => {
     if (!isBlur) {
       return { isValid: true };
     }
@@ -33,7 +33,7 @@ const useInputValidation = (errors) => {
       }
     }
     return { isValid: true };
-  }
+  };
   return [input, handleInput, handleBlur, handleFocus, isInputValid];
 };
 

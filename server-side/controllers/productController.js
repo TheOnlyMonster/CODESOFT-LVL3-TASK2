@@ -6,10 +6,16 @@ const getAllProducts = async (req, res, next) => {
   const skip = (page - 1) * PER_PAGE;
   try {
     const productsCount = await Product.countDocuments();
+    const highestPriceProduct = await Product.find().sort({ price: -1 }).limit(1);
+    const lowestPriceProduct = await Product.find().sort({ price: 1 }).limit(1);
+    const lowestPrice = lowestPriceProduct[0].price;
+    const highestPrice = highestPriceProduct[0].price;
     const products = await Product.find().skip(skip).limit(PER_PAGE);
     res.status(200).json({
       products,
       productsCount,
+      highestPrice,
+      lowestPrice
     });
   } catch (error) {
     next(error);

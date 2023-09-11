@@ -9,7 +9,7 @@ export default function BasicCardSkeleton() {
     <Transition>
       <Card
         variant="outlined"
-        sx={{ width: 320 }}
+        sx={{ width: 250 }}
         style={{ margin: "20px", textAlign: "center" }}
       >
         <AspectRatio minHeight="120px" maxHeight="200px">

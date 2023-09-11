@@ -6,10 +6,6 @@ export default function PopUpForm(props) {
   const [serverError, setServerError] = useState({ val: false, msg: "" });
   async function formSubmitHandler(e) {
     e.preventDefault();
-    const isValid = props.handleValidation(setServerError);
-    if (!isValid) {
-      return;
-    }
     let data;
     if (props.type === "mixed") {
       data = new FormData();
@@ -18,7 +14,6 @@ export default function PopUpForm(props) {
       }
     }else {
       data = props.formData;
-      console.log(data);
     }
     try {
       const headers = props.type === "json" ? { headers: { "Content-Type": "application/json" } } : {}
@@ -27,7 +22,7 @@ export default function PopUpForm(props) {
         body: props.type === "mixed" ? data : JSON.stringify(props.formData),
         ...headers
       });
-      if (res.status === 422) {
+      if (res.status >= 400 && res.status < 500) {
         const errors = await res.json();
         throw errors;
       }
@@ -37,7 +32,7 @@ export default function PopUpForm(props) {
       }
     }
     catch (error) {
-      if (error.statusCode === 422) {
+      if (error.statusCode >= 400 && error.statusCode < 500) {
         setServerError({ val: true, msg: error.msg });
       } else {
         // ...

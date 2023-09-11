@@ -10,7 +10,7 @@ const Transition = (props) => {
       classNames="fade"
       unmountOnExit
     >
-      <div className={"animated-container"}>{props.children}</div>
+      <div className={"animated-container " + props.className}>{props.children}</div>
     </CSSTransition>
   );
 };

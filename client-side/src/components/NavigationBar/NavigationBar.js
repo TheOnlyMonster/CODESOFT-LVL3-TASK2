@@ -1,6 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import Container from "../Container/Container";
 import styles from "./NavigationBar.module.css";
+import Divider from '@mui/material/Divider';
 const NavigationBar = () => {
   const location = useLocation();
   return (
@@ -57,6 +58,7 @@ const NavigationBar = () => {
           </li>
         </ul>
       </Container>
+      <Divider variant="middle" />
       <Outlet />
     </>
   );

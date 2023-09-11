@@ -50,7 +50,6 @@ app.use((error, req, res, next) => {
   if (!error.msg) {
     error.msg = "Something went wrong!";
   }
-  console.log(error);
   res.status(error.statusCode).json(error);
 });
 

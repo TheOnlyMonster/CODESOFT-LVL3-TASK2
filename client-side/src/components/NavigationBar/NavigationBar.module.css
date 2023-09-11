@@ -49,7 +49,9 @@ ul {
     letter-spacing: 1.5px;
     gap: 5px;
 }
-li {
+.header li,
+.nav li,
+.search li {
   display: flex;
   align-items: center;
   justify-content: center;

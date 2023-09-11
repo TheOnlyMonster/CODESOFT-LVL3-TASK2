@@ -1,95 +1,27 @@
-import useInputValidation from "../../hooks/useInputValidation";
+import { useState  } from "react";
+import FormInput from "../../components/FormInput";
 import PopUpForm from "../PopUpForm/PopUpForm";
-import styles from "../PopUpForm/PopUpForm.module.css";
 import { useNavigate } from "react-router-dom";
 const SignUpForm = () => {
   const navigate = useNavigate();
-  const [
-    email,
-    handleEmail,
-    handleEmailBlur,
-    handleEmailFocus,
-    emailValidation,
-  ] = useInputValidation([
-    {
-      regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-      errorMessage: "Please enter a valid email",
-    },
-  ]);
-  const [
-    password,
-    handlePassword,
-    handlePasswordBlur,
-    handlePasswordFocus,
-    passwordValidation,
-  ] = useInputValidation([
-    {
-      regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-      errorMessage:
-        "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number and one special character",
-    },
-  ]);
-  const [
-    confirmPassword,
-    handleConfirmPassword,
-    handleConfirmPasswordBlur,
-    handleConfirmPasswordFocus,
-    confirmPasswordValidation,
-  ] = useInputValidation([]);
-  function handleValidation() {
-    if (!emailValidation().isValid || !passwordValidation().isValid) {
-      return false;
-    }
-    return true;
-  }
+  const [Fname, setFname] = useState("");
+  const [Lname, setLname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   return (
-    <PopUpForm handleValidation={handleValidation} action="http://localhost:5000/sign-up" method="POST" type="json" formData={{ email, password, confirmPassword }} handleOk={() => navigate("/")}>
-      <label key={"email"}>
-        <input
-          className={!emailValidation().isValid ? styles.error : ""}
-          type="email"
-          placeholder="Email"
-          name="email"
-          onChange={handleEmail}
-          value={email}
-          onBlur={handleEmailBlur}
-          onFocus={handleEmailFocus}
-          required
-        />
-        {!emailValidation().isValid && <p>{emailValidation().errorMessage}</p>}
-      </label>
-      <label key={"password"}>
-        <input
-          className={!passwordValidation().isValid ? styles.error : ""}
-          type="password"
-          placeholder="Password"
-          name="password"
-          onChange={handlePassword}
-          value={password}
-          onBlur={handlePasswordBlur}
-          onFocus={handlePasswordFocus}
-          required
-        />
-        {!passwordValidation().isValid && (
-          <p>{passwordValidation().errorMessage}</p>
-        )}
-      </label>
-      <label key={"confirmPassword"}>
-        <input
-          className={!confirmPasswordValidation().isValid ? styles.error : ""}
-          type="password"
-          placeholder="Confirm Password"
-          name="confirmPassword"
-          onChange={handleConfirmPassword}
-          value={confirmPassword}
-          onBlur={handleConfirmPasswordBlur}
-          onFocus={handleConfirmPasswordFocus}
-          required
-        />
-        {!confirmPasswordValidation().isValid && (
-          <p>{confirmPasswordValidation().errorMessage}</p>
-        )}
-      </label>
+    <PopUpForm
+      action="http://localhost:5000/sign-up"
+      method="POST"
+      type="json"
+      formData={{ email, password, confirmPassword, Fname, Lname  }}
+      handleOk={() => navigate("/")}
+    >
+      <FormInput inputValidation={[{regex: /^[a-zA-Z'-]+(\s[a-zA-Z'-]+)*$/, errorMessage: "Please enter a valid name"}]} type="text" placeholder="First Name" name="Fname" getValue={(Fname)=>setFname(Fname)} />
+      <FormInput inputValidation={[{regex: /^[a-zA-Z'-]+(\s[a-zA-Z'-]+)*$/, errorMessage: "Please enter a valid name"}]} type="text" placeholder="Last Name" name="Lname" getValue={(Lname)=>setLname(Lname)} />
+      <FormInput inputValidation={[{regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, errorMessage: "Please enter a valid email"}]} type="email" placeholder="Email" name="email" getValue={(email)=>setEmail(email)} />
+      <FormInput inputValidation={[{ regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/, errorMessage: "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number and one special character" }]} type="password" placeholder="Password" name="password" getValue={(password)=>setPassword(password)} />
+      <FormInput inputValidation={[]} type="password" placeholder="Confirm Password" name="confirmPassword" getValue={(confirmPassword)=>setConfirmPassword(confirmPassword)} />
       <button type="submit">Sign Up</button>
       <button type="button" onClick={() => navigate("/")}>
         Close

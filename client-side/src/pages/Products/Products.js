@@ -4,12 +4,15 @@ import ProductItemSkeleton from "../../components/Skeletons/ProductItemSkeleton"
 import Container from "../../components/Container/Container";
 import Transition from "../../components/Transition/Transition";
 import Pagination from "../../components/Pagination/Pagination";
+import styles from "./Products.module.css";
 const Products = () => {
-  const { products, productsCount, currentPage } = useLoaderData();
+  const { products, productsCount, currentPage, highestPrice, lowestPrice } =
+    useLoaderData();
+  
   const navigation = useNavigation();
   const skeletons = [];
   if (navigation.state === "loading") {
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 10; i++) {
       skeletons.push(<ProductItemSkeleton key={i} />);
     }
   }
@@ -19,16 +22,31 @@ const Products = () => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
-            gap: "25px",
+            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+            gap: "15px",
           }}
         >
           {skeletons}
         </div>
       ) : (
-        <Transition>
-            <ProductList products={products} />
-            <Pagination productsCount={productsCount} currentPage={currentPage} pageItems={10} />
+        <Transition className={styles.products}>
+          <ProductList products={products} highestPrice={highestPrice} lowestPrice={lowestPrice}>
+            <div className={styles.results}>
+              <h1>Results</h1>
+              <div>
+                <p>
+                  Showing {10 * (currentPage - 1) + 1}-
+                  {10 * (currentPage - 1) + products.length} of {productsCount}{" "}
+                  results
+                </p>
+              </div>
+            </div>
+          </ProductList>
+          <Pagination
+            productsCount={productsCount}
+            currentPage={currentPage}
+            pageItems={10}
+          />
         </Transition>
       )}
     </Container>

@@ -1,71 +1,15 @@
-import useInputValidation from "../../hooks/useInputValidation";
-import styles from "../PopUpForm/PopUpForm.module.css";
 import PopUpForm from "../PopUpForm/PopUpForm";
 import { Link, useNavigate } from "react-router-dom";
+import FormInput from "../../components/FormInput";
+import { useState } from "react";
 const SignInForm = () => {
   const navigate = useNavigate();
-  const [
-    email,
-    handleEmail,
-    handleEmailBlur,
-    handleEmailFocus,
-    emailValidation,
-  ] = useInputValidation([
-    {
-      regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-      errorMessage: "Please enter a valid email",
-    },
-  ]);
-  const [
-    password,
-    handlePassword,
-    handlePasswordBlur,
-    handlePasswordFocus,
-    passwordValidation,
-  ] = useInputValidation([]);
-  function handleValidation() {
-    if (
-      !emailValidation().isValid ||
-      !passwordValidation().isValid
-    ) {
-      return false;
-    }
-    return true;
-  }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   return (
-    <PopUpForm handleValidation={handleValidation} action="http://localhost:5000/sign-in" method="POST" type="json" formData={{ email, password }} handleOk={() => navigate("/")} >
-      <label key={"email"}>
-        <input
-          className={!emailValidation().isValid ? styles.error : ""}
-          type="email"
-          placeholder="Email"
-          name="email"
-          onChange={handleEmail}
-          value={email}
-          onBlur={handleEmailBlur}
-          onFocus={handleEmailFocus}
-          required
-        />
-        {!emailValidation().isValid && (
-          <p>{emailValidation().errorMessage}</p>
-        )}
-      </label>
-      <label key={"password"}>
-        <input
-          className={!passwordValidation().isValid ? styles.error : ""}
-          type="password"
-          placeholder="Password"
-          name="password"
-          onChange={handlePassword}
-          value={password}
-          onBlur={handlePasswordBlur}
-          onFocus={handlePasswordFocus}
-          required
-        />
-        {!passwordValidation().isValid && (
-          <p>{passwordValidation().errorMessage}</p>
-        )}
-      </label>
+    <PopUpForm action="http://localhost:5000/sign-in" method="POST" type="json" formData={{ email, password }} handleOk={() => navigate("/")} >
+      <FormInput inputValidation={[{ regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, errorMessage: "Please enter a valid email" }]} type="email" placeholder="Email" name="email" getValue={(email) => setEmail(email)} />
+      <FormInput inputValidation={[]} type="password" placeholder="Password" name="password" getValue={(password) => setPassword(password)} />
       <label>
         <Link to="/sign-up">Don't have an account? Sign up</Link>
       </label>

@@ -94,9 +94,9 @@
   color: #ffffff;
   cursor: not-allowed;
 }
-.error{
+.error {
   border: 2px solid red !important;
 }
-.success{
+.success {
   border: 2px solid green !important;
 }
