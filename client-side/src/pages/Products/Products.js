@@ -1,24 +1,33 @@
-import { useLoaderData, useNavigation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import ProductList from "../../components/ProductsList/ProductsList";
 import ProductItemSkeleton from "../../components/Skeletons/ProductItemSkeleton";
 import Container from "../../components/Container/Container";
 import Transition from "../../components/Transition/Transition";
 import Pagination from "../../components/Pagination/Pagination";
 import styles from "./Products.module.css";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts } from "../../store/products-actions";
 const Products = () => {
-  const { products, productsCount, currentPage, highestPrice, lowestPrice } =
-    useLoaderData();
-  
-  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { products, productsCount, currentPage, highestPrice, lowestPrice, isLoading } = useSelector((state) => state.products);
+  function useQuery() {
+    return new URLSearchParams(useLocation().search);
+  }
+  const query = useQuery();
+  const page = query.get("page") || 1;
+  useEffect(() => {
+    dispatch(getAllProducts(page));
+  },[page, dispatch])
   const skeletons = [];
-  if (navigation.state === "loading") {
+  if (isLoading) {
     for (let i = 0; i < 10; i++) {
       skeletons.push(<ProductItemSkeleton key={i} />);
     }
   }
   return (
     <Container>
-      {navigation.state === "loading" ? (
+      {isLoading ? (
         <div
           style={{
             display: "grid",
@@ -52,27 +61,4 @@ const Products = () => {
     </Container>
   );
 };
-const loader = async ({ request }) => {
-  try {
-    const clientUrl = new URL(request.url);
-    const searchTerm = clientUrl.searchParams.get("page") || 1;
-    const url = `http://localhost:5000/products?page=${searchTerm}`;
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    const data = await response.json();
-    data.currentPage = searchTerm;
-    return data;
-  } catch (error) {
-    return error;
-  }
-};
-export { loader };
 export default Products;

@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import Products, { loader as productLoader } from "./pages/Products/Products";
+import Products from "./pages/Products/Products";
 import NavigationBar from "./components/NavigationBar/NavigationBar";
 import AddProduct from "./pages/AddProduct/AddProduct";
 import SignInForm from "./pages/SignInForm/SignInForm";
@@ -14,7 +14,6 @@ const router = createBrowserRouter([
       {
         path: "products",
         element: <Products />,
-        loader: productLoader,
       },
       {
         path: "add-product",
