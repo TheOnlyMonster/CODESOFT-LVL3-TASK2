@@ -7,11 +7,15 @@ import Pagination from "../../components/Pagination/Pagination";
 import styles from "./Products.module.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts, getAllPrice } from "../../store/products-actions";
+import {
+  getAllProducts,
+  getAllProductsFilterByPrice,
+} from "../../store/products-actions";
 const Products = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
+  const [isFiltered, setIsFiltered] = useState(false);
   const {
     products,
     productsCount,
@@ -21,23 +25,27 @@ const Products = () => {
     isLoading,
   } = useSelector((state) => state.products);
   const [price, setPrice] = useState([lowestPrice, highestPrice]);
-  const handleFiltering = () => {
-    navigate("/products/price/");
-    dispatch(getAllPrice(page, price));
-  };
   function useQuery() {
     return new URLSearchParams(location.search);
   }
+
   const query = useQuery();
-  const page = query.get("page") || 1;
+  const page = +query.get("page") || 1;
+  useEffect(() => {
+    if (!isFiltered) return;
+    navigate("/products/price/");
+    dispatch(getAllProductsFilterByPrice(page, price));
+    setIsFiltered(false);
+  }, [dispatch, navigate, price, page, isFiltered]);
+
   useEffect(() => {
     if (location.pathname === "/products/price/") {
-      dispatch(getAllPrice(page, price));
+      dispatch(getAllProductsFilterByPrice(page, price));
     } else {
       dispatch(getAllProducts(page));
     }
-    setPrice([lowestPrice, highestPrice]);
-  }, [page, dispatch, lowestPrice, highestPrice]);
+  }, [page, dispatch]);
+
   const skeletons = [];
   if (isLoading) {
     for (let i = 0; i < 10; i++) {
@@ -64,7 +72,7 @@ const Products = () => {
             lowestPrice={lowestPrice}
             price={price}
             setPrice={setPrice}
-            handleFiltering={handleFiltering}
+            setIsFiltered={setIsFiltered}
           >
             <div className={styles.results}>
               <h1>Results</h1>

@@ -4,7 +4,7 @@ const productController = require("../controllers/productController");
 
 router.get("/products", productController.getAllProducts);
 
-router.get("/products/price/:price", productController.getAllPrice);
+router.get("/products/price/:price", productController.getAllProductsFilterByPrice);
 
 router.post(
   "/add-product",

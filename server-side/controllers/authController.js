@@ -45,7 +45,6 @@ const signUp = async (req, res, next) => {
       Fname: "Test",
       Lname: "Test",
     });
-    console.log(user);
     user
       .save()
       .then((savedUser) => {

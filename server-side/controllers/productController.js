@@ -4,47 +4,64 @@ const PER_PAGE = 10;
 const getAllProducts = async (req, res, next) => {
   const page = req.query.page || 1;
   const skip = (page - 1) * PER_PAGE;
+
   try {
-    const productsCount = await Product.countDocuments();
-    const highestPriceProduct = await Product.find().sort({ price: -1 }).limit(1);
-    const lowestPriceProduct = await Product.find().sort({ price: 1 }).limit(1);
-    const lowestPrice = lowestPriceProduct[0].price;
-    const highestPrice = highestPriceProduct[0].price;
-    const products = await Product.find().skip(skip).limit(PER_PAGE);
+    const { products, productsCount, lowestPrice, highestPrice } =
+      await fetchProducts(skip);
+
     res.status(200).json({
       products,
       productsCount,
       highestPrice,
-      lowestPrice
+      lowestPrice,
     });
   } catch (error) {
     next(error);
   }
 };
 
-const getAllPrice = async (req, res, next) => {
+const getAllProductsFilterByPrice = async (req, res, next) => {
   const page = req.query.page || 1;
   const skip = (page - 1) * PER_PAGE;
   const price = req.params.price;
-  const priceRange = price.split(',').map(Number);
-  const [minPrice, maxPrice] = priceRange;
+  const [minPrice, maxPrice] = price.split(",").map(Number);
+
   try {
-    const productsCount = await Product.countDocuments({price: {$gte: minPrice, $lte: maxPrice}});
-    const highestPriceProduct = await Product.find().sort({ price: -1 }).limit(1);
-    const lowestPriceProduct = await Product.find().sort({ price: 1 }).limit(1);
-    const lowestPrice = lowestPriceProduct[0].price;
-    const highestPrice = highestPriceProduct[0].price;
-    const products = await Product.find({price: {$gte: minPrice, $lte: maxPrice}}).skip(skip).limit(PER_PAGE);
+    const { products, productsCount, lowestPrice, highestPrice } =
+      await fetchProducts(skip, minPrice, maxPrice);
     res.status(200).json({
       products,
       productsCount,
       highestPrice,
-      lowestPrice
+      lowestPrice,
     });
   } catch (error) {
     next(error);
   }
-}
+};
+
+const fetchProducts = async (skip, minPrice = null, maxPrice = null) => {
+  const [lowestPriceProduct, highestPriceProduct] = await Promise.all([
+    Product.findOne().sort({ price: 1 }),
+    Product.findOne().sort({ price: -1 }),
+  ]);
+
+  const lowestPrice = lowestPriceProduct.price;
+  const highestPrice = highestPriceProduct.price;
+
+  const productsQuery =
+    minPrice && maxPrice
+      ? {
+          price: { $gte: minPrice, $lte: maxPrice },
+        }
+      : {};
+
+  const products = await Product.find(productsQuery).skip(skip).limit(PER_PAGE);
+
+  const productsCount = await Product.countDocuments(productsQuery);
+
+  return { products, productsCount, lowestPrice, highestPrice };
+};
 const addProduct = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -65,5 +82,5 @@ const addProduct = async (req, res, next) => {
 module.exports = {
   getAllProducts,
   addProduct,
-  getAllPrice
+  getAllProductsFilterByPrice,
 };

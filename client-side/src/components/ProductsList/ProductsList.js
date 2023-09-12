@@ -1,14 +1,20 @@
 import { Button, Slider, Typography } from "@mui/material";
 import ProductItem from "../ProductItem/ProductItem";
 import styles from "./ProductList.module.css";
+import { useState, useEffect } from "react";
 
 const ProductList = (props) => {
+  const [tempPrice, setTempPrice] = useState([
+    props.lowestPrice,
+    props.highestPrice,
+  ]);
+  const [isClicked, setIsClicked] = useState(false);
   function valueText(value) {
     return `${value}`;
   }
   const minDistance = 1;
   const maxValue = props.highestPrice;
-  const handleChange1 = (event, newValue, activeThumb) => {
+  const handleChange = (_, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
     }
@@ -17,17 +23,24 @@ const ProductList = (props) => {
     );
 
     if (activeThumb === 0) {
-      props.setPrice([
-        Math.min(newValue1, props.price[1] - minDistance),
-        props.price[1],
+      setTempPrice([
+        Math.min(newValue1, tempPrice[1] - minDistance),
+        tempPrice[1],
       ]);
     } else {
-      props.setPrice([
-        props.price[0],
-        Math.max(newValue2, props.price[0] + minDistance),
+      setTempPrice([
+        tempPrice[0],
+        Math.max(newValue2, tempPrice[0] + minDistance),
       ]);
     }
   };
+  useEffect(() => {
+    if (!isClicked) return;
+    props.setPrice(tempPrice);
+    props.setIsFiltered(true);
+    setIsClicked(false);
+  }, [isClicked, tempPrice, props]);
+
   return props.products.length === 0 ? (
     <p>No products found</p>
   ) : (
@@ -38,9 +51,9 @@ const ProductList = (props) => {
             <h2>Filter by price</h2>
             <Slider
               getAriaLabel={() => "Minimum distance"}
-              value={props.price}
-              onChange={handleChange1}
+              value={tempPrice}
               valueLabelDisplay="auto"
+              onChange={handleChange}
               getAriaValueText={valueText}
               size="small"
               disableSwap
@@ -56,12 +69,12 @@ const ProductList = (props) => {
               <Button
                 variant="outlined"
                 id="button-addon2"
-                onClick={props.handleFiltering}
+                onClick={() => setIsClicked(true)}
               >
                 Filter
               </Button>
               <Typography className="ms-auto" variant="h7">
-                Price : ${props.price[0]} — ${props.price[1]}{" "}
+                Price : ${tempPrice[0]} — ${tempPrice[1]}{" "}
               </Typography>
             </div>
           </li>

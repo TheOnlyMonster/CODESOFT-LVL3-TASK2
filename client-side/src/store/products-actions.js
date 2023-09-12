@@ -1,53 +1,46 @@
-import { getAll, startLoading, endLoading } from "./products-slice";
+import { setProductData, startLoading, endLoading } from "./products-slice";
+
+const apiUrl = "http://localhost:5000/products";
+
+const fetchData = async (dispatch, page, price = null) => {
+  try {
+    dispatch(startLoading());
+    const url = price
+      ? `${apiUrl}/price/${price}?page=${page}`
+      : `${apiUrl}?page=${page}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const data = await response.json();
+    data.currentPage = page;
+    return data;
+  } catch (error) {
+    return error;
+  } finally {
+    dispatch(endLoading());
+  }
+};
+
 export const getAllProducts = (page) => {
   return async (dispatch) => {
-    try {
-      dispatch(startLoading());
-      const url = `http://localhost:5000/products?page=${page}`;
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const data = await response.json();
-      data.currentPage = page;
-      dispatch(getAll(data));
-      dispatch(endLoading());
-    } catch (error) {
-      return error;
+    const data = await fetchData(dispatch, page);
+    if (!(data instanceof Error)) {
+      dispatch(setProductData(data));
     }
   };
 };
 
-
-export const getAllPrice = (page, price) => {
+export const getAllProductsFilterByPrice = (page, price) => {
   return async (dispatch) => {
-    try {
-      dispatch(startLoading());
-      const url = `http://localhost:5000/products/price/${price}?page=${page}`;
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const data = await response.json();
-      data.currentPage = page;
-      console.log(price, page, data)
-      dispatch(getAll(data));
-      dispatch(endLoading());
-    } catch (error) {
-      return error;
+    const data = await fetchData(dispatch, page, price);
+    if (!(data instanceof Error)) {
+      dispatch(setProductData(data));
     }
   };
 };
-
