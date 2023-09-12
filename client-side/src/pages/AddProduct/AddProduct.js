@@ -1,21 +1,18 @@
-import { useNavigate } from "react-router-dom";
 import PopUpForm from "../PopUpForm/PopUpForm";
 import { useState } from "react";
 import FormInput from "../../components/FormInput";
 import useInputValidation from "../../hooks/useInputValidation";
 import styles from "../PopUpForm/PopUpForm.module.css";
-const AddProduct = () => {
-  const navigate = useNavigate();
+const AddProduct = ({ handleClose , open }) => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [image, handleImage, handleImageBlur, handleImageFocus, handleImageValidation] = useInputValidation([]);
-  const handleOk = () => {
-    navigate("/products");
-  };
+
   return (
     <PopUpForm
-      handleOk={handleOk}
+      open={open}
+      handleClose={handleClose}
       action="http://localhost:5000/add-product"
       method="POST"
       formData={[
@@ -84,7 +81,7 @@ const AddProduct = () => {
         )}
       </label>
       <button type="submit">Add Product</button>
-      <button type="button" onClick={() => navigate("/")}>
+      <button type="button" onClick={handleClose}>
         Close
       </button>
     </PopUpForm>

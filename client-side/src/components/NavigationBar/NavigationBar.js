@@ -2,8 +2,17 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import Container from "../Container/Container";
 import styles from "./NavigationBar.module.css";
 import Divider from '@mui/material/Divider';
+import { useState } from "react";
+import AddProduct from "../../pages/AddProduct/AddProduct";
 const NavigationBar = () => {
   const location = useLocation();
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <>
       <Container>
@@ -40,7 +49,7 @@ const NavigationBar = () => {
         </ul>
         <ul className={styles.nav}>
           <li className={location.pathname === "/" ? styles.active : ""}>
-            Home
+            <Link to="/">Home</Link>
           </li>
           <li
             className={location.pathname === "/products" ? styles.active : ""}
@@ -54,7 +63,10 @@ const NavigationBar = () => {
               location.pathname === "/add-product" ? styles.active : ""
             }
           >
-            <Link to="/add-product">Add Product</Link>
+          <button onClick={handleClickOpen}>Add Product</button>
+            {open && (
+              <AddProduct handleClose={handleClose} open={open} />
+            )}
           </li>
         </ul>
       </Container>

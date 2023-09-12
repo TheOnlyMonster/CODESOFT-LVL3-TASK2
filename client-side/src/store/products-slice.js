@@ -28,6 +28,14 @@ const productsSlice = createSlice({
         lowestPrice,
       };
     },
+    addProduct: (state, action) => {
+      const { product } = action.payload;
+      state.products.push(product);
+      state.productsCount++;
+      state.highestPrice = Math.max(state.highestPrice, product.price);
+      state.lowestPrice = Math.min(state.lowestPrice, product.price);
+      state.currentPage = 1;
+    },
     startLoading: (state) => {
       state.isLoading = true;
     },
@@ -39,5 +47,5 @@ const productsSlice = createSlice({
 
 export default productsSlice;
 
-export const { setProductData, startLoading, endLoading } =
+export const { setProductData, startLoading, endLoading, addProduct } =
   productsSlice.actions;

@@ -41,52 +41,52 @@ const ProductList = (props) => {
     setIsClicked(false);
   }, [isClicked, tempPrice, props]);
 
-  return props.products.length === 0 ? (
-    <p>No products found</p>
-  ) : (
-    <>
-      <div className={styles.container}>
-        <ul>
-          <li>
-            <h2>Filter by price</h2>
-            <Slider
-              getAriaLabel={() => "Minimum distance"}
-              value={tempPrice}
-              valueLabelDisplay="auto"
-              onChange={handleChange}
-              getAriaValueText={valueText}
-              size="small"
-              disableSwap
-              max={maxValue}
-            />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
+  return (
+    <div className={styles.container}>
+      <ul>
+        <li>
+          <h2>Filter by price</h2>
+          <Slider
+            getAriaLabel={() => "Minimum distance"}
+            value={tempPrice}
+            valueLabelDisplay="auto"
+            onChange={handleChange}
+            getAriaValueText={valueText}
+            size="small"
+            disableSwap
+            max={maxValue}
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              variant="outlined"
+              id="button-addon2"
+              onClick={() => setIsClicked(true)}
             >
-              <Button
-                variant="outlined"
-                id="button-addon2"
-                onClick={() => setIsClicked(true)}
-              >
-                Filter
-              </Button>
-              <Typography className="ms-auto" variant="h7">
-                Price : ${tempPrice[0]} — ${tempPrice[1]}{" "}
-              </Typography>
-            </div>
-          </li>
-          <li>
-            <h2>Filter by category</h2>
-            <ul className={styles.category}>
-              <li>Category 1</li>
-              <li>Category 2</li>
-              <li>Category 3</li>
-            </ul>
-          </li>
-        </ul>
+              Filter
+            </Button>
+            <Typography className="ms-auto" variant="h7">
+              Price : ${tempPrice[0]} — ${tempPrice[1]}{" "}
+            </Typography>
+          </div>
+        </li>
+        <li>
+          <h2>Filter by category</h2>
+          <ul className={styles.category}>
+            <li>Category 1</li>
+            <li>Category 2</li>
+            <li>Category 3</li>
+          </ul>
+        </li>
+      </ul>
+      {props.products.length === 0 ? (
+        <p className={styles.p}>No products found</p>
+      ) : (
         <div>
           {props.children}
           <ul className={styles.list}>
@@ -95,8 +95,8 @@ const ProductList = (props) => {
             ))}
           </ul>
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 

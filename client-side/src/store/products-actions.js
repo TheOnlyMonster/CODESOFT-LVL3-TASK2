@@ -1,24 +1,38 @@
-import { setProductData, startLoading, endLoading } from "./products-slice";
+import {
+  setProductData,
+  startLoading,
+  endLoading,
+  addProduct,
+} from "./products-slice";
 
-const apiUrl = "http://localhost:5000/products";
+const apiUrl = "http://localhost:5000";
 
-const fetchData = async (dispatch, page, price = null) => {
+const fetchData = async (
+  dispatch,
+  method,
+  url,
+  page,
+  formData = null,
+  type = "json"
+) => {
   try {
     dispatch(startLoading());
-    const url = price
-      ? `${apiUrl}/price/${price}?page=${page}`
-      : `${apiUrl}?page=${page}`;
+    const headers =
+      type === "json"
+        ? { headers: { "Content-Type": "application/json" } }
+        : {};
     const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      method,
+      body: formData,
+      ...headers,
     });
     if (!response.ok) {
       throw new Error(response.statusText);
     }
     const data = await response.json();
+    if (!formData) {
     data.currentPage = page;
+    }
     return data;
   } catch (error) {
     return error;
@@ -26,21 +40,50 @@ const fetchData = async (dispatch, page, price = null) => {
     dispatch(endLoading());
   }
 };
-
-export const getAllProducts = (page) => {
+export const getAllProductsAction = (page) => {
   return async (dispatch) => {
-    const data = await fetchData(dispatch, page);
+    const data = await fetchData(
+      dispatch,
+      "GET",
+      `${apiUrl}/products?page=${page}`,
+      page,
+      null,
+      "json"
+    );
     if (!(data instanceof Error)) {
       dispatch(setProductData(data));
     }
   };
 };
 
-export const getAllProductsFilterByPrice = (page, price) => {
+export const getAllProductsFilterByPriceAction = (page, price) => {
   return async (dispatch) => {
-    const data = await fetchData(dispatch, page, price);
+    const data = await fetchData(
+      dispatch,
+      "GET",
+      `${apiUrl}/products/price/${price}?page=${page}`,
+      page,
+      null,
+      "json"
+    );
     if (!(data instanceof Error)) {
       dispatch(setProductData(data));
+    }
+  };
+};
+
+export const addProductAction = (page, product) => {
+  return async (dispatch) => {
+    const data = await fetchData(
+      dispatch,
+      "POST",
+      `${apiUrl}/add-product?page=${page}`,
+      page,
+      product,
+      "mixed"
+    );
+    if (!(data instanceof Error)) {
+      dispatch(addProduct({ product: { ...data } }));
     }
   };
 };

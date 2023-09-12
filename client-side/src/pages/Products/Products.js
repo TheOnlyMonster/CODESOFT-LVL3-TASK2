@@ -3,13 +3,13 @@ import ProductList from "../../components/ProductsList/ProductsList";
 import ProductItemSkeleton from "../../components/Skeletons/ProductItemSkeleton";
 import Container from "../../components/Container/Container";
 import Transition from "../../components/Transition/Transition";
-import Pagination from "../../components/Pagination/Pagination";
+import PaginationList from "../../components/Pagination/PaginationList";
 import styles from "./Products.module.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllProducts,
-  getAllProductsFilterByPrice,
+  getAllProductsAction,
+  getAllProductsFilterByPriceAction,
 } from "../../store/products-actions";
 const Products = () => {
   const dispatch = useDispatch();
@@ -28,23 +28,21 @@ const Products = () => {
   function useQuery() {
     return new URLSearchParams(location.search);
   }
-
   const query = useQuery();
   const page = +query.get("page") || 1;
   useEffect(() => {
     if (!isFiltered) return;
     navigate("/products/price/");
-    dispatch(getAllProductsFilterByPrice(page, price));
     setIsFiltered(false);
   }, [dispatch, navigate, price, page, isFiltered]);
 
   useEffect(() => {
     if (location.pathname === "/products/price/") {
-      dispatch(getAllProductsFilterByPrice(page, price));
+      dispatch(getAllProductsFilterByPriceAction(page, price));
     } else {
-      dispatch(getAllProducts(page));
+      dispatch(getAllProductsAction(page));
     }
-  }, [page, dispatch]);
+  }, [page, dispatch, price, location.pathname]);
 
   const skeletons = [];
   if (isLoading) {
@@ -85,11 +83,13 @@ const Products = () => {
               </div>
             </div>
           </ProductList>
-          <Pagination
-            productsCount={productsCount}
-            currentPage={currentPage}
-            pageItems={10}
-          />
+          {products.length !== 0 && (
+            <PaginationList
+              productsCount={productsCount}
+              currentPage={currentPage}
+              pageItems={10}
+            />
+          )}
         </Transition>
       )}
     </Container>

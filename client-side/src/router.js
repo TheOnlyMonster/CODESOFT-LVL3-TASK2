@@ -20,10 +20,6 @@ const router = createBrowserRouter([
         element: <Products />
       },
       {
-        path: "add-product",
-        element: <AddProduct />,
-      },
-      {
         path: "sign-in",
         element: <SignInForm />,
       },
