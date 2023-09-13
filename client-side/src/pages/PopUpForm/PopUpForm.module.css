@@ -20,25 +20,15 @@
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
   width: 40%;
 }
-
+.popup-inner form {
+  display: grid;
+  gap: 20px;
+}
 .popup-inner h2 {
   margin-top: 0;
 }
 .popup-inner a {
   text-decoration: underline;
-}
-.popup-inner label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.popup-inner input {
-  width: 100%;
-  padding: 5px;
-  border-radius: 5px;
-  border: 2px solid #ccc;
-  margin-bottom: 10px;
-  overflow-x: scroll;
 }
 
 .popup-inner button[type="submit"],

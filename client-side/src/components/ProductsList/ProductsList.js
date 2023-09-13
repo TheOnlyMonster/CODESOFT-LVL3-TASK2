@@ -4,6 +4,10 @@ import styles from "./ProductList.module.css";
 import { useState, useEffect } from "react";
 
 const ProductList = (props) => {
+  const products = [];
+  for(let i = 0; i < Math.min(props.products.length, 10); i++) {
+    products.push(<ProductItem product={props.products[i]} key={i} />);
+  }
   const [tempPrice, setTempPrice] = useState([
     props.lowestPrice,
     props.highestPrice,
@@ -84,15 +88,13 @@ const ProductList = (props) => {
           </ul>
         </li>
       </ul>
-      {props.products.length === 0 ? (
+      {products.length === 0 ? (
         <p className={styles.p}>No products found</p>
       ) : (
         <div>
           {props.children}
           <ul className={styles.list}>
-            {props.products.map((product) => (
-              <ProductItem product={product} key={product._id} />
-            ))}
+            {products}
           </ul>
         </div>
       )}

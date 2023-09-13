@@ -1,30 +1,49 @@
 import styles from "./PopUpForm.module.css";
-import { useState } from "react";
 import { Form, useLocation } from "react-router-dom";
 import Modal from "@mui/material/Modal";
 import { useDispatch } from "react-redux";
-import { addProductAction } from "../../store/products-actions";
-export default function PopUpForm(props) {
-  const [serverError, setServerError] = useState({ val: false, msg: "" });
+import { Formik } from "formik";
+import FormInput from "../../components/FormInput";
+
+export default function PopUpForm({
+  formNames=[],
+  type = null,
+  item = null,
+  action,
+  schema,
+  open,
+  handleClose,
+  children,
+  submitText,
+  enableReinitialize=true
+}) {
+  // const [serverError, setServerError] = useState({ val: false, msg: "" });
   const dispatch = useDispatch();
   const location = useLocation();
+
   function useQuery() {
     return new URLSearchParams(location.search);
   }
+  const initialValues = {};
+  for (const formName of formNames) {
+    initialValues[formName] = "";
+  }
   const query = useQuery();
   const page = +query.get("page") || 1;
-  async function formSubmitHandler(e) {
-    e.preventDefault();
+  function formSubmitHandler(values) {
     let data;
-    if (props.type === "mixed") {
+    if (type === "mixed") {
       data = new FormData();
-      for (const formProp of props.formData) {
-        data.append(formProp.name, formProp.value);
-      }
+      formNames.forEach((name) => {
+        data.append(name, values[name]);
+      });
+    } else if(type === "json") {
+      data = JSON.stringify(values);
     } else {
-      data = props.formData;
+      data = item;
     }
-    dispatch(addProductAction(page, data));
+    dispatch(action(page, data));
+    // props.setIsSubmitted(false)
     // try {
     //   const headers =
     //     props.type === "json"
@@ -53,24 +72,44 @@ export default function PopUpForm(props) {
   }
   return (
     <>
-      {serverError.val && (
+      {/* {serverError.val && (
         <input disabled className={styles.error} value={serverError.msg} />
-      )}
+      )} */}
       <Modal
-        open={props.open}
-        onClose={props.handleClose}
+        open={open}
+        onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <div className={styles.popup}>
           <div className={styles["popup-inner"]}>
-            <Form
-              action={props.action}
-              method={props.method}
+            <Formik
               onSubmit={formSubmitHandler}
+              initialValues={initialValues}
+              validationSchema={schema}
+              enableReinitialize={enableReinitialize}
             >
-              {props.children}
-            </Form>
+              {({ handleSubmit, setFieldValue }) => (
+                <Form onSubmit={handleSubmit}>
+                  {children}
+                  {type === "mixed" && (
+                    <FormInput
+                      label="Image"
+                      type="file"
+                      helperText="Image"
+                      name="image"
+                      setFieldValue={setFieldValue}
+                    />
+                  )}
+                  <div>
+                    <button type="submit">{submitText}</button>
+                    <button type="button" onClick={handleClose}>
+                      Close
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       </Modal>

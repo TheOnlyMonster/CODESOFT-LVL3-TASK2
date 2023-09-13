@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Products from "./pages/Products/Products";
 import NavigationBar from "./components/NavigationBar/NavigationBar";
-import AddProduct from "./pages/AddProduct/AddProduct";
 import SignInForm from "./pages/SignInForm/SignInForm";
 import ErrorPage from "./pages/ErrorPage.js";
 import SignUpForm from "./pages/SignUpForm/SignUpForm";

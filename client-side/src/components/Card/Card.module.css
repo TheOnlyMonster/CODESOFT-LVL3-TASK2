@@ -5,7 +5,8 @@
   box-shadow: 0px 0px 20px 0px #888888;
   border-radius: 15px;
 }
-.card a {
+.card span {
+  cursor: pointer;
   margin: 5px;
   display: inline-block;
   color: #2266cc;
@@ -21,7 +22,7 @@
   -ms-border-radius: 6px;
   -o-border-radius: 6px;
 }
-.card a:hover {
+.card span:hover {
   color: white;
   background-color: #2266cc;
 }

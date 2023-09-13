@@ -9,7 +9,7 @@ ul {
   padding-top: 5px;
   text-align: center;
 }
-.active{
+.active {
   color: #2266cc;
 }
 .header li,
@@ -23,7 +23,7 @@ ul {
 }
 .header li:hover,
 .nav li:hover,
-.search li:hover  {
+.search li:hover {
   cursor: pointer;
   color: #2266cc;
 }
@@ -43,11 +43,26 @@ ul {
   gap: 25px;
   font-weight: bold;
 }
-.header a{
-    display: flex;
-    align-items: center;
-    letter-spacing: 1.5px;
-    gap: 5px;
+.header a {
+  display: flex;
+  align-items: center;
+  letter-spacing: 1.5px;
+  gap: 5px;
+}
+.nav li button {
+  background-color: inherit;
+  border: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  transition: inherit;
+  -webkit-transition: inherit;
+  -moz-transition: inherit;
+  -ms-transition: inherit;
+  -o-transition: inherit;
+}
+.nav li button:hover{
+  cursor: pointer;
+  color: #2266cc;
 }
 .header li,
 .nav li,
@@ -57,7 +72,7 @@ ul {
   justify-content: center;
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
   .header ul {
     flex-direction: column;
   }

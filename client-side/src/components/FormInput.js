@@ -1,32 +1,44 @@
-import { useEffect } from "react";
-import useInputValidation from "../hooks/useInputValidation";
-import styles from "../pages/PopUpForm/PopUpForm.module.css";
-const FormInput = (props) => {
-  const [
-    inputValue,
-    handleInputValue,
-    handleInputBlur,
-    handleInputFocus,
-    inputValidation,
-  ] = useInputValidation(props.inputValidation);
-  useEffect(() => {
-    props.getValue(inputValue);
-  }, [inputValue, props]);
+import { TextField, Typography } from "@mui/material";
+import { useField } from "formik";
+const FormInput = ({ label, type, name, setFieldValue = null }) => {
+  const [field, meta] = useField(name);
+  if (type === "file") {
+    return (
+      <>
+        <TextField
+          onChange={(e) => {
+            setFieldValue(name, e.target.files[0]);
+          }}
+          label={type === "file" ? "" : label}
+          variant="outlined"
+          type={type}
+          error={meta.touched && Boolean(meta.error)}
+          name={name}
+        />
+        {meta.touched && meta.error && (
+          <Typography variant="body2" color="error">
+            {meta.error}
+          </Typography>
+        )}
+      </>
+    );
+  }
   return (
-    <label key={props.name}>
-      <input
-        className={!inputValidation().isValid ? styles.error : ""}
-        type={props.type}
-        placeholder={props.placeholder}
-        name={props.name}
-        onChange={handleInputValue}
-        value={inputValue}
-        onBlur={handleInputBlur}
-        onFocus={handleInputFocus}
-        required
+    <>
+      <TextField
+        {...field}
+        label={type === "file" ? "" : label}
+        variant="outlined"
+        type={type}
+        error={meta.touched && Boolean(meta.error)}
+        name={name}
       />
-      {!inputValidation().isValid && <p>{inputValidation().errorMessage}</p>}
-    </label>
+      {meta.touched && meta.error && (
+        <Typography variant="body2" color="error">
+          {meta.error}
+        </Typography>
+      )}
+    </>
   );
 };
 

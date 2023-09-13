@@ -3,6 +3,7 @@ import {
   startLoading,
   endLoading,
   addProduct,
+  deleteProduct,
 } from "./products-slice";
 
 const apiUrl = "http://localhost:5000";
@@ -13,7 +14,7 @@ const fetchData = async (
   url,
   page,
   formData = null,
-  type = "json"
+  type
 ) => {
   try {
     dispatch(startLoading());
@@ -21,9 +22,10 @@ const fetchData = async (
       type === "json"
         ? { headers: { "Content-Type": "application/json" } }
         : {};
+    const body = method === "DELETE" ? null : formData; 
     const response = await fetch(url, {
       method,
-      body: formData,
+      body,
       ...headers,
     });
     if (!response.ok) {
@@ -31,7 +33,7 @@ const fetchData = async (
     }
     const data = await response.json();
     if (!formData) {
-    data.currentPage = page;
+      data.currentPage = page;
     }
     return data;
   } catch (error) {
@@ -87,3 +89,19 @@ export const addProductAction = (page, product) => {
     }
   };
 };
+
+export const deleteProductAction = (page, product) => {
+  return async (dispatch) => {
+    const data = await fetchData(
+      dispatch,
+      "DELETE",
+      `${apiUrl}/delete-product/${product._id}?page=${page}`,
+      page,
+      product,
+      "mixed"
+    );
+    if (!(data instanceof Error)) {
+      dispatch(deleteProduct( data ));
+    }
+  };
+}

@@ -19,7 +19,26 @@ const getAllProducts = async (req, res, next) => {
     next(error);
   }
 };
-
+const removeProduct = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = errors.array()[0];
+    error.statusCode = 422;
+    return next(error);
+  }
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    const [lowestPriceProduct, highestPriceProduct] = await Promise.all([
+      Product.findOne().sort({ price: 1 }),
+      Product.findOne().sort({ price: -1 }),
+    ]);
+    const lowestPrice = lowestPriceProduct ? lowestPriceProduct.price : 0;
+    const highestPrice = highestPriceProduct ? highestPriceProduct.price : 100;
+    res.status(200).json({ product, lowestPrice, highestPrice });
+  } catch (error) {
+    next(error);
+  }
+}
 const getAllProductsFilterByPrice = async (req, res, next) => {
   const page = req.query.page || 1;
   const skip = (page - 1) * PER_PAGE;
@@ -78,37 +97,9 @@ const fetchProducts = async (skip, minPrice = null, maxPrice = null) => {
 
   return { products, productsCount, lowestPrice, highestPrice };
 };
-// const addProduct = async (req, res, next) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     const error = errors.array()[0];
-//     error.statusCode = 422;
-//     return next(error);
-//   }
-//   try {
-//     const image = req.file.path;
-//     const { title, price, description } = req.body;
-//     const product = new Product({ title, price, description, image });
-//     await product.save();
-
-//     const page = req.query.page || 1;
-//     const skip = (page - 1) * PER_PAGE;
-
-//     const { products, productsCount, lowestPrice, highestPrice } =
-//       await fetchProducts(skip);
-
-//     res.status(200).json({
-//       products,
-//       productsCount,
-//       highestPrice,
-//       lowestPrice,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 module.exports = {
   getAllProducts,
   addProduct,
   getAllProductsFilterByPrice,
+  removeProduct
 };

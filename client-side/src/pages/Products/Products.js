@@ -77,7 +77,7 @@ const Products = () => {
               <div>
                 <p>
                   Showing {10 * (currentPage - 1) + 1}-
-                  {10 * (currentPage - 1) + products.length} of {productsCount}{" "}
+                  {10 * (currentPage - 1) + Math.min(10, products.length)} of {productsCount}{" "}
                   results
                 </p>
               </div>

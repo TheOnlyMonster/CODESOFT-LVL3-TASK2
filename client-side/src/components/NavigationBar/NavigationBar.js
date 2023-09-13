@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import Container from "../Container/Container";
 import styles from "./NavigationBar.module.css";
-import Divider from '@mui/material/Divider';
+import Divider from "@mui/material/Divider";
 import { useState } from "react";
 import AddProduct from "../../pages/AddProduct/AddProduct";
 const NavigationBar = () => {
@@ -52,21 +52,20 @@ const NavigationBar = () => {
             <Link to="/">Home</Link>
           </li>
           <li
-            className={location.pathname === "/products" ? styles.active : ""}
+            className={location.pathname === "/products" || location.pathname === "/products/price/" ? styles.active : ""}
           >
             <Link to="/products">Products</Link>
           </li>
           <li>About Us</li>
           <li>Orders</li>
-          <li
-            className={
-              location.pathname === "/add-product" ? styles.active : ""
-            }
-          >
-          <button onClick={handleClickOpen}>Add Product</button>
-            {open && (
-              <AddProduct handleClose={handleClose} open={open} />
-            )}
+          <li>
+            <button
+              className={open ? styles.active : ""}
+              onClick={handleClickOpen}
+            >
+              Add Product
+            </button>
+            {open && <AddProduct handleClose={handleClose} open={open} />}
           </li>
         </ul>
       </Container>
