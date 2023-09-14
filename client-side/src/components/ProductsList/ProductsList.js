@@ -1,29 +1,31 @@
 import { Button, Slider, Typography } from "@mui/material";
 import ProductItem from "../ProductItem/ProductItem";
 import styles from "./ProductList.module.css";
-import { useState, useEffect } from "react";
-
-const ProductList = (props) => {
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+const ProductList = ({ allProducts, setPrice, children, price}) => {
+  const { lowestPrice, highestPrice } = useSelector((state) => state.productsReducer);
+  const navigate = useNavigate();
   const products = [];
-  for(let i = 0; i < Math.min(props.products.length, 10); i++) {
-    products.push(<ProductItem product={props.products[i]} key={i} />);
+  for(let i = 0; i < Math.min(allProducts.length, 10); i++) {
+    products.push(<ProductItem product={allProducts[i]} key={i} />);
   }
-  const [tempPrice, setTempPrice] = useState([
-    props.lowestPrice,
-    props.highestPrice,
-  ]);
+  const [tempPrice, setTempPrice] = useState(price);
   const [isClicked, setIsClicked] = useState(false);
+  useEffect(() => {
+    setTempPrice(price);
+  },[price])
   function valueText(value) {
     return `${value}`;
   }
   const minDistance = 1;
-  const maxValue = props.highestPrice;
   const handleChange = (_, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
     }
     const [newValue1, newValue2] = newValue.map((val) =>
-      Math.min(Math.max(val, props.lowestPrice), maxValue)
+      Math.min(Math.max(val, lowestPrice), highestPrice)
     );
 
     if (activeThumb === 0) {
@@ -38,13 +40,14 @@ const ProductList = (props) => {
       ]);
     }
   };
+
+
   useEffect(() => {
     if (!isClicked) return;
-    props.setPrice(tempPrice);
-    props.setIsFiltered(true);
+    setPrice(tempPrice);
+    navigate("/products/price/");
     setIsClicked(false);
-  }, [isClicked, tempPrice, props]);
-
+  }, [isClicked, tempPrice, navigate, setPrice]);
   return (
     <div className={styles.container}>
       <ul>
@@ -58,7 +61,7 @@ const ProductList = (props) => {
             getAriaValueText={valueText}
             size="small"
             disableSwap
-            max={maxValue}
+            max={highestPrice}
           />
           <div
             style={{
@@ -92,7 +95,7 @@ const ProductList = (props) => {
         <p className={styles.p}>No products found</p>
       ) : (
         <div>
-          {props.children}
+          {children}
           <ul className={styles.list}>
             {products}
           </ul>
@@ -102,4 +105,6 @@ const ProductList = (props) => {
   );
 };
 
-export default ProductList;
+export default React.memo(ProductList, (prevProps, nextProps) => {
+  return false;
+});

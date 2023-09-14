@@ -1,14 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const productsSlice = createSlice({
-  name: "products",
+  name: "productsReducer",
   initialState: {
     products: [],
     productsCount: 0,
     currentPage: 1,
-    highestPrice: 0,
-    lowestPrice: 0,
-    isLoading: false,
+    highestPrice: undefined,
+    lowestPrice: undefined,
   },
   reducers: {
     setProductData: (state, action) => {
@@ -41,18 +40,12 @@ const productsSlice = createSlice({
       state.productsCount--;
       state.highestPrice = highestPrice;
       state.lowestPrice = lowestPrice;
-      console.log(state.lowestPrice, state.highestPrice);
-    },
-    startLoading: (state) => {
-      state.isLoading = true;
-    },
-    endLoading: (state) => {
-      state.isLoading = false;
+      console.log(state.highestPrice, state.lowestPrice);
     },
   },
 });
 
 export default productsSlice;
 
-export const { setProductData, startLoading, endLoading, addProduct, deleteProduct } =
+export const { setProductData, addProduct, deleteProduct } =
   productsSlice.actions;

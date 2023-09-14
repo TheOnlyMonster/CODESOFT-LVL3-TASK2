@@ -15,7 +15,7 @@ export default function PopUpForm({
   handleClose,
   children,
   submitText,
-  enableReinitialize=true
+  enableReinitialize=false
 }) {
   // const [serverError, setServerError] = useState({ val: false, msg: "" });
   const dispatch = useDispatch();
@@ -43,38 +43,9 @@ export default function PopUpForm({
       data = item;
     }
     dispatch(action(page, data));
-    // props.setIsSubmitted(false)
-    // try {
-    //   const headers =
-    //     props.type === "json"
-    //       ? { headers: { "Content-Type": "application/json" } }
-    //       : {};
-    //   const res = await fetch(props.action, {
-    //     method: props.method,
-    //     body: props.type === "mixed" ? data : JSON.stringify(props.formData),
-    //     ...headers,
-    //   });
-    //   if (res.status >= 400 && res.status < 500) {
-    //     const errors = await res.json();
-    //     throw errors;
-    //   }
-    //   if (res.ok) {
-    //     setServerError({ val: false, msg: "" });
-    //     props.handleClose();
-    //   }
-    // } catch (error) {
-    //   if (error.statusCode >= 400 && error.statusCode < 500) {
-    //     setServerError({ val: true, msg: error.msg });
-    //   } else {
-    //     // ...
-    //   }
-    // }
   }
   return (
     <>
-      {/* {serverError.val && (
-        <input disabled className={styles.error} value={serverError.msg} />
-      )} */}
       <Modal
         open={open}
         onClose={handleClose}

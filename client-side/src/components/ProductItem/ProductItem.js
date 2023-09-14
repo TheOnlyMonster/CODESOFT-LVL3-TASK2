@@ -1,15 +1,9 @@
 import { Link } from "react-router-dom";
 import Card from "../Card/Card";
-import { useState } from "react";
 import DeleteProduct from "../../pages/DeleteProduct/DeleteProduct";
+import usePopUp from "../../hooks/usePopUp";
 const ProductItem = ({ product }) => {
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [ open, handleClickOpen, handleClose ] = usePopUp();
   const imagePath = `/uploads/${product.image.split("uploads\\")[1]}`;
   return (
     <li>

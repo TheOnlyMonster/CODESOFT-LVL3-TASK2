@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import ProductList from "../../components/ProductsList/ProductsList";
 import ProductItemSkeleton from "../../components/Skeletons/ProductItemSkeleton";
 import Container from "../../components/Container/Container";
@@ -13,36 +13,34 @@ import {
 } from "../../store/products-actions";
 const Products = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const location = useLocation();
-  const [isFiltered, setIsFiltered] = useState(false);
   const {
     products,
     productsCount,
     currentPage,
     highestPrice,
     lowestPrice,
-    isLoading,
-  } = useSelector((state) => state.products);
-  const [price, setPrice] = useState([lowestPrice, highestPrice]);
+  } = useSelector((state) => state.productsReducer);
+  const { isLoading } = useSelector((state) => state.authReducer);
+  const [price, setPrice] = useState([0, 100]);
   function useQuery() {
     return new URLSearchParams(location.search);
   }
   const query = useQuery();
   const page = +query.get("page") || 1;
   useEffect(() => {
-    if (!isFiltered) return;
-    navigate("/products/price/");
-    setIsFiltered(false);
-  }, [dispatch, navigate, price, page, isFiltered]);
-
-  useEffect(() => {
     if (location.pathname === "/products/price/") {
       dispatch(getAllProductsFilterByPriceAction(page, price));
     } else {
+      //if(lowestPrice === undefined || highestPrice === undefined) return;
+      //console.log("Get All Products")
       dispatch(getAllProductsAction(page));
     }
-  }, [page, dispatch, price, location.pathname]);
+  }, [page, dispatch, price, location.pathname, lowestPrice, highestPrice]);
+  useEffect(() => {
+    if(lowestPrice === undefined || highestPrice === undefined) return;
+    setPrice([lowestPrice, highestPrice]);
+  },[lowestPrice, highestPrice])
 
   const skeletons = [];
   if (isLoading) {
@@ -65,20 +63,17 @@ const Products = () => {
       ) : (
         <Transition className={styles.products}>
           <ProductList
-            products={products}
-            highestPrice={highestPrice}
-            lowestPrice={lowestPrice}
-            price={price}
-            setPrice={setPrice}
-            setIsFiltered={setIsFiltered}
+            allProducts={products}
+              setPrice={setPrice}
+              price={price}
           >
             <div className={styles.results}>
               <h1>Results</h1>
               <div>
                 <p>
                   Showing {10 * (currentPage - 1) + 1}-
-                  {10 * (currentPage - 1) + Math.min(10, products.length)} of {productsCount}{" "}
-                  results
+                  {10 * (currentPage - 1) + Math.min(10, products.length)} of{" "}
+                  {productsCount} results
                 </p>
               </div>
             </div>

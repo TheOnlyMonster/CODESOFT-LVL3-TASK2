@@ -2,17 +2,13 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import Container from "../Container/Container";
 import styles from "./NavigationBar.module.css";
 import Divider from "@mui/material/Divider";
-import { useState } from "react";
 import AddProduct from "../../pages/AddProduct/AddProduct";
+import usePopUp from "../../hooks/usePopUp";
+import Notification from "../Notification/Notification";
 const NavigationBar = () => {
+  
   const location = useLocation();
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [ addProductOpen, handleAddProductClickOpen, handleAddProductClose ] = usePopUp();
   return (
     <>
       <Container>
@@ -52,7 +48,12 @@ const NavigationBar = () => {
             <Link to="/">Home</Link>
           </li>
           <li
-            className={location.pathname === "/products" || location.pathname === "/products/price/" ? styles.active : ""}
+            className={
+              location.pathname === "/products" ||
+              location.pathname === "/products/price/"
+                ? styles.active
+                : ""
+            }
           >
             <Link to="/products">Products</Link>
           </li>
@@ -60,17 +61,18 @@ const NavigationBar = () => {
           <li>Orders</li>
           <li>
             <button
-              className={open ? styles.active : ""}
-              onClick={handleClickOpen}
+              className={addProductOpen ? styles.active : ""}
+              onClick={handleAddProductClickOpen}
             >
               Add Product
             </button>
-            {open && <AddProduct handleClose={handleClose} open={open} />}
+            {addProductOpen && <AddProduct handleClose={handleAddProductClose} open={addProductOpen}/>}
           </li>
         </ul>
       </Container>
       <Divider variant="middle" />
       <Outlet />
+      <Notification/>
     </>
   );
 };
