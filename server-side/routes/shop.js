@@ -1,16 +1,16 @@
 const router = require("express").Router();
 const { body, param } = require("express-validator");
 const productController = require("../controllers/productController");
+const isAuth = require("../middlewares/authUser");
 const Product = require("../models/product");
 router.get("/products", productController.getAllProducts);
-
 router.get(
   "/products/price/:price",
   productController.getAllProductsFilterByPrice
 );
-
 router.post(
   "/add-product",
+  isAuth,
   [
     body("title")
       .not()
@@ -51,6 +51,7 @@ router.post(
 
 router.delete(
   "/delete-product/:id",
+  isAuth,
   [
     param("id")
       .not()

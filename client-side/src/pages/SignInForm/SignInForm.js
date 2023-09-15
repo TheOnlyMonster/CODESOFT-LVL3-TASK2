@@ -1,22 +1,30 @@
 import PopUpForm from "../PopUpForm/PopUpForm";
-import { Link, useNavigate } from "react-router-dom";
 import FormInput from "../../components/FormInput";
-import { useState } from "react";
-const SignInForm = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import * as yup from "yup";
+import { signInAction } from "../../store/actions/auth-actions";
+const SignInForm = ({ handleClose, open }) => {
+  const schema = yup.object().shape({
+    email: yup
+      .string("Email must be a string")
+      .required("Email is required")
+      .email("Email must be a valid email"),
+    password: yup
+      .string("Password must be a string")
+      .required("Password is required")
+  });
   return (
-    <PopUpForm action="http://localhost:5000/sign-in" method="POST" type="json" formData={{ email, password }} handleOk={() => navigate("/")} >
-      <FormInput inputValidation={[{ regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, errorMessage: "Please enter a valid email" }]} type="email" placeholder="Email" name="email" getValue={(email) => setEmail(email)} />
-      <FormInput inputValidation={[]} type="password" placeholder="Password" name="password" getValue={(password) => setPassword(password)} />
-      <label>
-        <Link to="/sign-up">Don't have an account? Sign up</Link>
-      </label>
-      <button type="submit">Sign In</button>
-      <button type="button" onClick={() => navigate("/")}>
-          Close
-      </button>
+    <PopUpForm
+      open={open}
+      submitText="Sign In"
+      action={signInAction}
+      handleClose={handleClose}
+      schema={schema}
+      formNames={["email", "password"]}
+      type={"json"}
+    >
+      <FormInput label={"Email"} type="email" name="email" />
+      <FormInput label={"Password"} type="password" name="password" />
+      <button>Don't have an account? Sign up</button>
     </PopUpForm>
   );
 };

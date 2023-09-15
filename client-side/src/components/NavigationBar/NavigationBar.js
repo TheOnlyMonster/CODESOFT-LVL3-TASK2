@@ -5,10 +5,35 @@ import Divider from "@mui/material/Divider";
 import AddProduct from "../../pages/AddProduct/AddProduct";
 import usePopUp from "../../hooks/usePopUp";
 import Notification from "../Notification/Notification";
+import SignInForm from "../../pages/SignInForm/SignInForm";
+import { useEffect } from "react";
+import { logout, setUser, autoLogout } from "../../store/slices/auth-slice";
+import { useDispatch, useSelector } from "react-redux";
 const NavigationBar = () => {
-  
   const location = useLocation();
-  const [ addProductOpen, handleAddProductClickOpen, handleAddProductClose ] = usePopUp();
+  const dispatch = useDispatch();
+  const [addProductOpen, handleAddProductClickOpen, handleAddProductClose] =
+    usePopUp();
+  const [signInOpen, handleSignInClickOpen, handleSignInClose] = usePopUp();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const expiryDate = localStorage.getItem("expiryDate");
+    if (!token || !expiryDate) {
+      return;
+    }
+    if (new Date(expiryDate) <= new Date()) {
+      dispatch(logout());
+      return;
+    }
+    const userId = localStorage.getItem("userId");
+    const remainingMilliseconds =
+      new Date(expiryDate).getTime() - new Date().getTime();
+    dispatch(setUser({ token, userId }));
+    dispatch(autoLogout(remainingMilliseconds));
+  }, [dispatch]);
+
+  const { isAuth } = useSelector((state) => state.authReducer);
   return (
     <>
       <Container>
@@ -19,10 +44,23 @@ const NavigationBar = () => {
               internship
             </li>
             <li>
-              <Link to="/sign-in">
-                <span className="material-symbols-outlined">person</span>{" "}
-                Login/Register
-              </Link>
+              {isAuth ? (
+                <button
+                  onClick={()=> dispatch(logout())}
+                  className={addProductOpen ? styles.active : ""}
+                >
+                  <span className="material-symbols-outlined">logout</span>
+                  Logout
+                </button>
+              ) : (
+                <button
+                  onClick={handleSignInClickOpen}
+                  className={addProductOpen ? styles.active : ""}
+                >
+                  <span className="material-symbols-outlined">person</span>{" "}
+                  Login/Register
+                </button>
+              )}
             </li>
           </ul>
         </header>
@@ -58,21 +96,33 @@ const NavigationBar = () => {
             <Link to="/products">Products</Link>
           </li>
           <li>About Us</li>
-          <li>Orders</li>
+          {isAuth && (
+            <li>Orders</li>
+          )}
           <li>
-            <button
-              className={addProductOpen ? styles.active : ""}
-              onClick={handleAddProductClickOpen}
-            >
-              Add Product
-            </button>
-            {addProductOpen && <AddProduct handleClose={handleAddProductClose} open={addProductOpen}/>}
+            {isAuth && (
+              <button
+                className={addProductOpen ? styles.active : ""}
+                onClick={handleAddProductClickOpen}
+              >
+                Add Product
+              </button>
+            )}
+            {isAuth && addProductOpen && (
+              <AddProduct
+                handleClose={handleAddProductClose}
+                open={addProductOpen}
+              />
+            )}
+            {signInOpen && (
+              <SignInForm handleClose={handleSignInClose} open={signInOpen} />
+            )}
           </li>
         </ul>
       </Container>
       <Divider variant="middle" />
       <Outlet />
-      <Notification/>
+      <Notification />
     </>
   );
 };

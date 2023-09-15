@@ -28,9 +28,7 @@ app.use(multer({ storage, fileFilter }).single("image"));
 app.use(bodyParser.json());
 const shopRouter = require("./routes/shop");
 const authRouter = require("./routes/auth");
-const Product = require("./models/product");
 const User = require("./models/user");
-
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -44,6 +42,7 @@ app.use(authRouter);
 app.use(shopRouter);
 
 app.use((error, req, res, next) => {
+  console.log(error);
   if (!error.statusCode) {
     error.statusCode = 500;
   }

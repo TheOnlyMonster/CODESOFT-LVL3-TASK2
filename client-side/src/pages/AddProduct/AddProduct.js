@@ -1,8 +1,10 @@
 import PopUpForm from "../PopUpForm/PopUpForm";
 import * as yup from "yup";
 import FormInput from "../../components/FormInput";
-import { addProductAction } from "../../store/products-actions";
+import { addProductAction } from "../../store/actions/products-actions";
+import { useSelector } from "react-redux";
 const AddProduct = ({ handleClose, open }) => {
+  const { token } = useSelector((state) => state.authReducer);
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
   const schema = yup.object().shape({
     title: yup
@@ -32,20 +34,16 @@ const AddProduct = ({ handleClose, open }) => {
     <PopUpForm
       open={open}
       submitText="Add Product"
-      schema={schema}
       handleClose={handleClose}
       action={addProductAction}
+      schema={schema}
       formNames={["title", "price", "description", "image"]}
       type="mixed"
+      token={token}
     >
-      <FormInput label="Title" type="text" helperText="Title" name="title" />
-      <FormInput label="Price" type="number" helperText="Price" name="price" />
-      <FormInput
-        label="Description"
-        type="text"
-        helperText="Description"
-        name="description"
-      />
+      <FormInput label="Title" type="text" name="title" />
+      <FormInput label="Price" type="number" name="price" />
+      <FormInput label="Description" type="text" name="description" />
     </PopUpForm>
   );
 };

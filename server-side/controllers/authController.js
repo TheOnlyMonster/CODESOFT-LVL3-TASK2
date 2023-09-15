@@ -1,7 +1,9 @@
 const { validationResult } = require("express-validator");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const signIn = async (req, res, next) => {
+  console.log("Entered", req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = errors.array()[0];
@@ -24,7 +26,20 @@ const signIn = async (req, res, next) => {
       error.msg = "Wrong password";
       throw error;
     }
-    res.status(200).json(user);
+    const token = jwt.sign(
+      {
+        email: user.email,
+        userId: user._id,
+      },
+      "my-ultra-secure-and-ultra-long-secret-for-codsoft-level-3-task-2-project",
+      {
+        expiresIn: "1h",
+      }
+    )
+    res.status(200).json({
+      token: token,
+      userId: user._id.toString(),
+    });
   } catch (error) {
     next(error);
   }

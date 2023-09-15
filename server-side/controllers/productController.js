@@ -75,6 +75,10 @@ const addProduct = async (req, res, next) => {
     next(error);
   }
 };
+
+const addToCart = async (req, res, next) => {
+  
+}
 const fetchProducts = async (skip, minPrice = null, maxPrice = null) => {
   const [lowestPriceProduct, highestPriceProduct] = await Promise.all([
     Product.findOne().sort({ price: 1 }),

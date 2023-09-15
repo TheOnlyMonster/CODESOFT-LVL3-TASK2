@@ -1,7 +1,8 @@
 import PopUpForm from "../PopUpForm/PopUpForm";
-import { deleteProductAction } from "../../store/products-actions";
+import { deleteProductAction } from "../../store/actions/products-actions";
+import { useSelector } from "react-redux";
 const DeleteProduct = ({ product, handleClose, open }) => {
-  
+  const { token } = useSelector((state) => state.authReducer);
   return (
     <PopUpForm
       open={open}
@@ -10,6 +11,7 @@ const DeleteProduct = ({ product, handleClose, open }) => {
       action={deleteProductAction}
       item={product}
       enableReinitialize={false}
+      token={token}
     >
       <h1>Are you sure you want to delete this product?</h1>
     </PopUpForm>

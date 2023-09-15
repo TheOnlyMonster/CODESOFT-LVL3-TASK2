@@ -10,17 +10,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAllProductsAction,
   getAllProductsFilterByPriceAction,
-} from "../../store/products-actions";
+} from "../../store/actions/products-actions";
 const Products = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const {
-    products,
-    productsCount,
-    currentPage,
-    highestPrice,
-    lowestPrice,
-  } = useSelector((state) => state.productsReducer);
+  const { products, productsCount, currentPage, highestPrice, lowestPrice } =
+    useSelector((state) => state.productsReducer);
   const { isLoading } = useSelector((state) => state.authReducer);
   const [price, setPrice] = useState([0, 100]);
   function useQuery() {
@@ -38,9 +33,9 @@ const Products = () => {
     }
   }, [page, dispatch, price, location.pathname, lowestPrice, highestPrice]);
   useEffect(() => {
-    if(lowestPrice === undefined || highestPrice === undefined) return;
+    if (lowestPrice === undefined || highestPrice === undefined) return;
     setPrice([lowestPrice, highestPrice]);
-  },[lowestPrice, highestPrice])
+  }, [lowestPrice, highestPrice]);
 
   const skeletons = [];
   if (isLoading) {
@@ -62,11 +57,7 @@ const Products = () => {
         </div>
       ) : (
         <Transition className={styles.products}>
-          <ProductList
-            allProducts={products}
-              setPrice={setPrice}
-              price={price}
-          >
+          <ProductList allProducts={products} setPrice={setPrice} price={price}>
             <div className={styles.results}>
               <h1>Results</h1>
               <div>

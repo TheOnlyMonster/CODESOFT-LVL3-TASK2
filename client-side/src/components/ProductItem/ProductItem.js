@@ -1,9 +1,18 @@
 import { Link } from "react-router-dom";
 import Card from "../Card/Card";
 import DeleteProduct from "../../pages/DeleteProduct/DeleteProduct";
+import AddToCart from "../../pages/AddToCart/AddToCart";
 import usePopUp from "../../hooks/usePopUp";
+import { useSelector } from "react-redux";
 const ProductItem = ({ product }) => {
-  const [ open, handleClickOpen, handleClose ] = usePopUp();
+  const { isAuth } = useSelector((state) => state.authReducer);
+  const [
+    deleteProductOpen,
+    handleDeleteProductClickOpen,
+    handleDeleteProductClose,
+  ] = usePopUp();
+  const [addProductOpen, handleAddProductClickOpen, handleAddProductClose] =
+    usePopUp();
   const imagePath = `/uploads/${product.image.split("uploads\\")[1]}`;
   return (
     <li>
@@ -15,11 +24,34 @@ const ProductItem = ({ product }) => {
         <Link to={`/products/${product._id}`}>
           <span className="material-symbols-outlined">info_i</span>
         </Link>
-        <Link to={`/add-to-cart/${product._id}`}>
-          <span className="material-symbols-outlined">add_shopping_cart</span>
-        </Link>
-        <span className="material-symbols-outlined" onClick={handleClickOpen}>delete</span>
-        {open && <DeleteProduct product={product} handleClose={handleClose} open={open} />}
+        <span
+          className="material-symbols-outlined"
+          onClick={handleAddProductClickOpen}
+        >
+          add_shopping_cart
+        </span>
+        {isAuth && (
+          <span
+            className="material-symbols-outlined"
+            onClick={handleDeleteProductClickOpen}
+          >
+            delete
+          </span>
+        )}
+        {isAuth && deleteProductOpen && (
+          <DeleteProduct
+            product={product}
+            handleClose={handleDeleteProductClose}
+            open={deleteProductOpen}
+          />
+        )}
+        {addProductOpen && (
+          <AddToCart
+            product={product}
+            handleClose={handleAddProductClose}
+            open={addProductOpen}
+          />
+        )}
       </Card>
     </li>
   );

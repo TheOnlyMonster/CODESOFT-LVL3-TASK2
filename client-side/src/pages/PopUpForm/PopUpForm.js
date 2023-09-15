@@ -6,7 +6,7 @@ import { Formik } from "formik";
 import FormInput from "../../components/FormInput";
 
 export default function PopUpForm({
-  formNames=[],
+  formNames = [],
   type = null,
   item = null,
   action,
@@ -15,7 +15,8 @@ export default function PopUpForm({
   handleClose,
   children,
   submitText,
-  enableReinitialize=false
+  enableReinitialize = true,
+  token=null
 }) {
   // const [serverError, setServerError] = useState({ val: false, msg: "" });
   const dispatch = useDispatch();
@@ -37,12 +38,16 @@ export default function PopUpForm({
       formNames.forEach((name) => {
         data.append(name, values[name]);
       });
-    } else if(type === "json") {
+    } else if (type === "json") {
       data = JSON.stringify(values);
     } else {
       data = item;
     }
-    dispatch(action(page, data));
+    if (token) {
+      dispatch(action(page, data, token));
+    } else {
+      dispatch(action(page, data));
+    }
   }
   return (
     <>
