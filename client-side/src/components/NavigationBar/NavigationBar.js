@@ -32,14 +32,8 @@ const NavigationBar = () => {
     dispatch(setUser({ token, userId }));
     dispatch(autoLogout(remainingMilliseconds));
   }, [dispatch]);
+
   const { isAuth } = useSelector((state) => state.authReducer);
-  const { cart, Fname, Lname } = useSelector((state) => state.userReducer);
-  const { errors } = useSelector((state) => state.authReducer);
-  useEffect(() => {
-    if (errors?.statusCode === 401) {
-      handleSignInClickOpen();
-    }
-  }, [errors, handleSignInClickOpen]);
   return (
     <>
       <Container>
@@ -51,18 +45,13 @@ const NavigationBar = () => {
             </li>
             <li>
               {isAuth ? (
-                <>
-                  <button
-                    onClick={() => dispatch(logout())}
-                    className={addProductOpen ? styles.active : ""}
-                  >
-                    <span className="material-symbols-outlined">logout</span>
-                    Logout
-                  </button>
-                  <button>
-                    {Fname} {Lname}
-                  </button>
-                </>
+                <button
+                  onClick={()=> dispatch(logout())}
+                  className={addProductOpen ? styles.active : ""}
+                >
+                  <span className="material-symbols-outlined">logout</span>
+                  Logout
+                </button>
               ) : (
                 <button
                   onClick={handleSignInClickOpen}
@@ -78,11 +67,11 @@ const NavigationBar = () => {
         <ul className={styles.search}>
           <input type="search" placeholder="Search.."></input>
           <li>
-            <span className="material-symbols-outlined">shopping_cart</span>
             <div>
               <p>Shopping Cart</p>
-              <h4>{isAuth ? cart.totalPrice : "0.00"}$</h4>
+              <h4>$0.00</h4>
             </div>
+            <span className="material-symbols-outlined">shopping_cart</span>
           </li>
           <li>
             <span className="material-symbols-outlined">call</span>
@@ -107,7 +96,9 @@ const NavigationBar = () => {
             <Link to="/products">Products</Link>
           </li>
           <li>About Us</li>
-          {isAuth && <li>Orders</li>}
+          {isAuth && (
+            <li>Orders</li>
+          )}
           <li>
             {isAuth && (
               <button
@@ -123,7 +114,7 @@ const NavigationBar = () => {
                 open={addProductOpen}
               />
             )}
-            { !isAuth && signInOpen && (
+            {signInOpen && (
               <SignInForm handleClose={handleSignInClose} open={signInOpen} />
             )}
           </li>

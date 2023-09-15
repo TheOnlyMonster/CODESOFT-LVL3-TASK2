@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
   if(!authHeader) {
@@ -9,7 +10,7 @@ module.exports = (req, res, next) => {
   }
   const token = req.get("Authorization").split(" ")[1];
   try {
-    const decoded = jwt.verify(token, process.env.SECRET_CODE);
+    const decoded = jwt.verify(token, "my-ultra-secure-and-ultra-long-secret-for-codsoft-level-3-task-2-project");
     if(!decoded) {
       const error = new Error();
       error.statusCode = 401;

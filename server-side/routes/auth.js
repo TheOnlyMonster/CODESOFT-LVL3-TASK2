@@ -50,14 +50,6 @@ router.post(
         }
         return true;
       }),
-    body("Fname")
-      .not()
-      .isEmpty()
-      .withMessage("First name is required"),
-    body("Lname")
-      .not()
-      .isEmpty()
-      .withMessage("Last name is required"),
   ],
   authController.signUp
 );

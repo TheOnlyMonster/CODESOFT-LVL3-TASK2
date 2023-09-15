@@ -2,7 +2,6 @@ import PopUpForm from "../PopUpForm/PopUpForm";
 import FormInput from "../../components/FormInput";
 import * as yup from "yup";
 import { useSelector } from "react-redux";
-import { addToCartAction } from "../../store/actions/products-actions";
 const AddToCart = ({ product, handleClose, open }) => {
   const schema = yup.object().shape({
     quantity: yup
@@ -16,10 +15,9 @@ const AddToCart = ({ product, handleClose, open }) => {
       open={open}
       submitText="Add To Cart"
       handleClose={handleClose}
-      action={addToCartAction}
+      action={handleClose}
       schema={schema}
       formNames={["quantity"]}
-      item={product}
       type={"json"}
       token={token}
     >

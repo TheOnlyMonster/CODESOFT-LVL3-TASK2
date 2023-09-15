@@ -17,7 +17,9 @@ router.post(
       .isEmpty()
       .withMessage("Title is required")
       .isLength({ min: 3 })
-      .withMessage("Title must be at least 3 characters long"),
+      .withMessage("Title must be at least 3 characters long")
+      .matches(/^[a-zA-Z0-9\s]+$/)
+      .withMessage("Title must contain only letters, numbers, and spaces"),
     body("price")
       .not()
       .isEmpty()
@@ -31,7 +33,11 @@ router.post(
       .isLength({
         min: 10,
       })
-      .withMessage("Description must be at least 10 characters long"),
+      .withMessage("Description must be at least 10 characters long")
+      .matches(/^[a-zA-Z0-9\s]+$/)
+      .withMessage(
+        "Description must contain only letters, numbers, and spaces"
+      ),
     body("image").custom((value, { req }) => {
       const file = req.file;
       if (!file) {
@@ -42,32 +48,7 @@ router.post(
   ],
   productController.addProduct
 );
-router.post(
-  "/add-to-cart/:id",
-  isAuth,
-  [
-    param("id")
-      .not()
-      .isEmpty()
-      .withMessage("ID is required")
-      .custom(async (value, { req }) => {
-        const product = await Product.findById(value);
-        if (!product) {
-          throw new Error("Product not found");
-        }
-        return true;
-      }),
-    body("quantity")
-      .not()
-      .isEmpty()
-      .withMessage("Quantity is required")
-      .isNumeric()
-      .withMessage("Quantity must be a number")
-      .isLength({ min: 1 })
-      .withMessage("Quantity must be greater than or equal to 1"),
-  ],
-  productController.addToCart
-);
+
 router.delete(
   "/delete-product/:id",
   isAuth,

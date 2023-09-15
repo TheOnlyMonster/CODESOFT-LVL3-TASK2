@@ -43,7 +43,11 @@ export default function PopUpForm({
     } else {
       data = item;
     }
-    dispatch(action(page, data, token, item));
+    if (token) {
+      dispatch(action(page, data, token));
+    } else {
+      dispatch(action(page, data));
+    }
   }
   return (
     <>

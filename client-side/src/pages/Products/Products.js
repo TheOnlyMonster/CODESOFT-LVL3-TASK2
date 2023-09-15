@@ -23,15 +23,15 @@ const Products = () => {
   }
   const query = useQuery();
   const page = +query.get("page") || 1;
-  
   useEffect(() => {
     if (location.pathname === "/products/price/") {
       dispatch(getAllProductsFilterByPriceAction(page, price));
     } else {
+      //if(lowestPrice === undefined || highestPrice === undefined) return;
+      //console.log("Get All Products")
       dispatch(getAllProductsAction(page));
     }
-  }, [page, dispatch, location]);
-
+  }, [page, dispatch, price, location.pathname, lowestPrice, highestPrice]);
   useEffect(() => {
     if (lowestPrice === undefined || highestPrice === undefined) return;
     setPrice([lowestPrice, highestPrice]);

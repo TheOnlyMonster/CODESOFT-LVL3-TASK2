@@ -20,18 +20,6 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  cart: {
-    items: [
-      {
-        productId: {
-          type: Schema.Types.ObjectId,
-          ref: "Product",
-          required: true,
-        },
-        quantity: { type: Number, required: true },
-      },
-    ],
-  }
 });
 const User = mongoose.model("User", userSchema);
 

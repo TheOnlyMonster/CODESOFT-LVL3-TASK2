@@ -40,7 +40,7 @@ export const fetchData = async (
       body,
       ...headers,
     });
-    if (response.status >= 400) {
+    if (response.status >= 400 && response.status < 500) {
       const errors = await response.json();
       throw errors;
     }
