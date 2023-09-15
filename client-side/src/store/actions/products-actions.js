@@ -2,8 +2,8 @@ import {
   setProductData,
   addProduct,
   deleteProduct,
-  addToCart,
 } from "../slices/products-slice";
+import { addToCart } from "../slices/user-slice";
 import { setSuccessMessage } from "../slices/auth-slice";
 import { fetchData, apiUrl } from "../utils/fetchData";
 export const getAllProductsAction = (page) => {
@@ -74,15 +74,16 @@ export const deleteProductAction = (page, product, token) => {
   };
 };
 
-export const addToCartAction = (page, product) => {
+export const addToCartAction = (page, quantity, token, product) => {
   return async (dispatch) => {
     const data = await fetchData(
       dispatch,
       "POST",
       `${apiUrl}/add-to-cart/${product._id}?page=${page}`,
       page,
-      null,
-      "json"
+      quantity,
+      "json",
+      token
     );
     if (data) {
       dispatch(addToCart(data));

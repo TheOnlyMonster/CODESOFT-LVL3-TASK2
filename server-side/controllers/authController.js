@@ -2,8 +2,8 @@ const { validationResult } = require("express-validator");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const getUpdatedCart = require("../utils/getUpdatedCart");
 const signIn = async (req, res, next) => {
-  console.log("Entered", req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = errors.array()[0];
@@ -35,10 +35,14 @@ const signIn = async (req, res, next) => {
       {
         expiresIn: "1h",
       }
-    )
+    );
+    const updatedCart = await getUpdatedCart(user);
     res.status(200).json({
-      token: token,
+      token,
       userId: user._id.toString(),
+      Fname: user.Fname,
+      Lname: user.Lname,
+      cart: updatedCart,
     });
   } catch (error) {
     next(error);
@@ -57,18 +61,13 @@ const signUp = async (req, res, next) => {
     const user = new User({
       email: req.body.email,
       password: hashedPassword,
-      Fname: "Test",
-      Lname: "Test",
+      Fname: req.body.Fname,
+      Lname: req.body.Lname,
+      cart: { items: [] },
     });
-    user
-      .save()
-      .then((savedUser) => {
-        console.log("User saved successfully!");
-        res.status(201).json(savedUser);
-      })
-      .catch((err) => {
-        next(err);
-      });
+    const savedUser = await user.save();
+    console.log("User saved successfully!");
+    res.status(201).json(savedUser);
   } catch (error) {
     next(error);
   }
