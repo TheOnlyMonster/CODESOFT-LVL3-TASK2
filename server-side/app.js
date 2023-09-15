@@ -1,10 +1,11 @@
-const DB_URL =
-  "mongodb+srv://abdelrahmanadel203:Admin123@l3t1.isuzelt.mongodb.net/L3T1";
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const app = express();
+const DB_URL = process.env.CONNECTION_URL;
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "../client-side/public/uploads");
@@ -55,7 +56,7 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(DB_URL)
   .then(() => {
-    app.listen(5000);
+    app.listen(process.env.PORT || 8080);
   })
   .catch((err) => {
     console.log(err);

@@ -41,19 +41,10 @@ const productsSlice = createSlice({
       state.highestPrice = highestPrice;
       state.lowestPrice = lowestPrice;
     },
-    addToCart: (state, action) => {
-      const { product } = action.payload;
-      state.products = state.products.map((p) => {
-        if (p._id === product._id) {
-          return { ...p, quantity: p.quantity + 1 };
-        }
-        return p;
-      });
-    }
   },
 });
 
 export default productsSlice;
 
-export const { setProductData, addProduct, deleteProduct, addToCart } =
+export const { setProductData, addProduct, deleteProduct } =
   productsSlice.actions;

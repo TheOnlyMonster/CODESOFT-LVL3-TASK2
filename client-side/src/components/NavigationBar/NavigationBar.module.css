@@ -75,6 +75,9 @@ ul {
   align-items: center;
   justify-content: center;
 }
+.search li:first-child{
+  background-color: red;
+}
 
 @media (max-width: 768px) {
   .header ul {

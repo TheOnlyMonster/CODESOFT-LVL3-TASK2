@@ -31,8 +31,8 @@
   text-decoration: underline;
 }
 
-.popup-inner button[type="submit"],
-.popup-inner button[type="button"] {
+.popup-inner div:last-child button[type="submit"],
+.popup-inner div:last-child button[type="button"] {
   background-color: #2366cc;
   color: white;
   border: none;
@@ -55,8 +55,7 @@
   -o-transition: 0.3s;
 }
 
-.popup-inner button[type="submit"]:hover,
-.popup-inner button[type="button"]:hover {
+.popup-inner div:last-child button[type="submit"]:hover {
   background-color: #0655cd;
 }
 
@@ -64,12 +63,12 @@
   margin-top: 20px;
 }
 
-.popup-inner button[type="button"] {
+.popup-inner div:last-child button[type="button"] {
   margin-top: 20px;
   background-color: #f44336;
 }
 
-.popup-inner button[type="button"]:hover {
+.popup-inner div:last-child button[type="button"]:hover {
   background-color: #da190b;
 }
 

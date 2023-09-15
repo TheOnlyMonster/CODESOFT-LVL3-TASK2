@@ -1,31 +1,47 @@
-import { useState  } from "react";
 import FormInput from "../../components/FormInput";
 import PopUpForm from "../PopUpForm/PopUpForm";
-import { useNavigate } from "react-router-dom";
-const SignUpForm = () => {
-  const navigate = useNavigate();
-  const [Fname, setFname] = useState("");
-  const [Lname, setLname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+import { signUpAction } from "../../store/actions/auth-actions";
+import * as yup from "yup";
+const SignUpForm = ({ open, handleClose }) => {
+  const schema = yup.object().shape({
+    email: yup
+      .string("Email must be a string")
+      .required("Email is required")
+      .email("Email must be a valid email"),
+    password: yup
+      .string("Password must be a string")
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character"
+      ),
+    confirmPassword: yup
+      .string("Confirm Password must be a string")
+      .required("Confirm Password is required")
+      .oneOf([yup.ref("password")], "Passwords must match"),
+    Fname: yup
+      .string("First name must be a string")
+      .required("First name is required"),
+    Lname: yup
+      .string("Last name must be a string")
+      .required("Last name is required"),
+  });
   return (
     <PopUpForm
-      action="http://localhost:5000/sign-up"
-      method="POST"
-      type="json"
-      formData={{ email, password, confirmPassword, Fname, Lname  }}
-      handleOk={() => navigate("/")}
+      open={open}
+      submitText="Sign Up"
+      action={signUpAction}
+      handleClose={handleClose}
+      schema={schema}
+      formNames={["email", "password", "confirmPassword", "Fname", "Lname"]}
+      type={"json"}
     >
-      <FormInput inputValidation={[{regex: /^[a-zA-Z'-]+(\s[a-zA-Z'-]+)*$/, errorMessage: "Please enter a valid name"}]} type="text" placeholder="First Name" name="Fname" getValue={(Fname)=>setFname(Fname)} />
-      <FormInput inputValidation={[{regex: /^[a-zA-Z'-]+(\s[a-zA-Z'-]+)*$/, errorMessage: "Please enter a valid name"}]} type="text" placeholder="Last Name" name="Lname" getValue={(Lname)=>setLname(Lname)} />
-      <FormInput inputValidation={[{regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, errorMessage: "Please enter a valid email"}]} type="email" placeholder="Email" name="email" getValue={(email)=>setEmail(email)} />
-      <FormInput inputValidation={[{ regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/, errorMessage: "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number and one special character" }]} type="password" placeholder="Password" name="password" getValue={(password)=>setPassword(password)} />
-      <FormInput inputValidation={[]} type="password" placeholder="Confirm Password" name="confirmPassword" getValue={(confirmPassword)=>setConfirmPassword(confirmPassword)} />
-      <button type="submit">Sign Up</button>
-      <button type="button" onClick={() => navigate("/")}>
-        Close
-      </button>
+      <FormInput label={"First Name"} type="text" name="Fname" />
+      <FormInput label={"Last Name"} type="text" name="Lname" />
+      <FormInput label={"Email"} type="email" name="email" />
+      <FormInput label={"Password"} type="password" name="password" />
+      <FormInput label={"Confirm Password"} type="password" name="confirmPassword" />
     </PopUpForm>
   );
 };
