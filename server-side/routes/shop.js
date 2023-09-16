@@ -89,7 +89,6 @@ router.delete(
 router.get(
   "/cart",
   isAuth,
-  [
-  ]
+  productController.getUserCart
 )
 module.exports = router;

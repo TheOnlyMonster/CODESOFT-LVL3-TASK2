@@ -15,11 +15,12 @@ export const signInAction = (page, userInfo) => {
       userInfo,
       "json"
     );
-    if (data) {
-      dispatch(setUser(data));
-      dispatch(setUserInfo(data));
-      dispatch(setSuccessMessage("User logged in successfully"));
+    if (!data) {
+      return;
     }
+    dispatch(setUser(data));
+    dispatch(setUserInfo(data));
+    dispatch(setSuccessMessage("User logged in successfully"));
   };
 }
 export const signUpAction = (page, userInfo) => {

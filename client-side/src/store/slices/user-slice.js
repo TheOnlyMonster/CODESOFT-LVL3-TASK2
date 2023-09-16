@@ -2,33 +2,83 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "userReducer",
   initialState: {
-    cart: {
-      items: [],
-      totalPrice: 0.0,
-    },
+    cart: { items: [] },
+    totalPrice: 0.0,
     Fname: undefined,
     Lname: undefined,
   },
   reducers: {
     addToCart: (state, action) => {
-      console.log(action.payload);
-      const cart = action.payload;
-      state.cart = cart;
+      state.totalPrice = action.payload.totalPrice;
       localStorage.setItem("totalPrice", action.payload.totalPrice);
     },
+    updateQuantity: (state, action) => {
+      const index = state.cart.items.findIndex(
+        (item) => item._id === action.payload._id
+      );
+      if (index === -1) return;
+      let totalPrice =
+        state.totalPrice -
+        state.cart.items[index].price * state.cart.items[index].quantity;
+      totalPrice += state.cart.items[index].price * action.payload.quantity;
+      state.cart.items[index].quantity = action.payload.quantity;
+      if (action.payload.quantity === 0) {
+        state.cart.items = state.cart.items.filter(
+          (item) => item._id !== action.payload._id
+        );
+        state.totalPrice = 0.0;
+      }
+      state.totalPrice = totalPrice;
+      localStorage.setItem("totalPrice", state.totalPrice);
+    },
     setUserInfo: (state, action) => {
-      console.log(action.payload);
       state.Fname = action.payload.Fname;
       state.Lname = action.payload.Lname;
-      state.cart = action.payload.cart;
+      state.totalPrice = action.payload.cart.totalPrice;
       localStorage.setItem("totalPrice", action.payload.cart.totalPrice);
+      localStorage.setItem("Fname", action.payload.Fname);
+      localStorage.setItem("Lname", action.payload.Lname);
     },
-    setTotalPrice: (state, action) => {
-      state.cart.totalPrice = action.payload;
+    setCart: (state, action) => {
+      state.cart.items = action.payload.items;
+      state.totalPrice = action.payload.totalPrice;
+      localStorage.setItem("totalPrice", action.payload.totalPrice);
+    },
+    clearInfo: (state) => {
+      state.cart.items = [];
+      state.totalPrice = 0.0;
+      state.Fname = undefined;
+      state.Lname = undefined;
+      localStorage.removeItem("totalPrice");
+      localStorage.removeItem("Fname");
+      localStorage.removeItem("Lname");
+    },
+    autoClearInfo: (state, action) => {
+      setTimeout(() => {
+        state.cart.items = [];
+        state.totalPrice = 0.0;
+        state.Fname = undefined;
+        state.Lname = undefined;
+        localStorage.removeItem("totalPrice");
+        localStorage.removeItem("Fname");
+        localStorage.removeItem("Lname");
+      }, action.payload);
+    },
+    setUserFromLocalStorage: (state) => {
+      state.totalPrice = localStorage.getItem("totalPrice");
+      state.Fname = localStorage.getItem("Fname");
+      state.Lname = localStorage.getItem("Lname");
     },
   },
 });
-export const { addToCart, setUserInfo, setTotalPrice } =
-  userSlice.actions;
+export const {
+  addToCart,
+  setUserInfo,
+  setUserFromLocalStorage,
+  setCart,
+  clearInfo,
+  autoClearInfo,
+  updateQuantity,
+} = userSlice.actions;
 
 export default userSlice;

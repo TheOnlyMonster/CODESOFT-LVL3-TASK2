@@ -9,7 +9,11 @@ import SignInForm from "../../pages/SignInForm/SignInForm";
 import { useEffect } from "react";
 import { logout, setUser, autoLogout } from "../../store/slices/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
-import { setTotalPrice } from "../../store/slices/user-slice";
+import {
+  clearInfo,
+  setUserFromLocalStorage,
+  autoClearInfo
+} from "../../store/slices/user-slice";
 import { TextField } from "@mui/material";
 const NavigationBar = () => {
   const location = useLocation();
@@ -26,17 +30,21 @@ const NavigationBar = () => {
     }
     if (new Date(expiryDate) <= new Date()) {
       dispatch(logout());
+      dispatch(clearInfo());
       return;
     }
     const userId = localStorage.getItem("userId");
     const remainingMilliseconds =
       new Date(expiryDate).getTime() - new Date().getTime();
     dispatch(setUser({ token, userId }));
-    dispatch(setTotalPrice(localStorage.getItem("totalPrice")));
+    dispatch(setUserFromLocalStorage());
     dispatch(autoLogout(remainingMilliseconds));
+    dispatch(autoClearInfo(remainingMilliseconds));
   }, [dispatch]);
-  const { isAuth, userId } = useSelector((state) => state.authReducer);
-  const { cart, Fname, Lname } = useSelector((state) => state.userReducer);
+  const { isAuth } = useSelector((state) => state.authReducer);
+  const { totalPrice, Fname, Lname } = useSelector(
+    (state) => state.userReducer
+  );
   const { errors } = useSelector((state) => state.authReducer);
   useEffect(() => {
     if (errors?.statusCode === 401) {
@@ -56,7 +64,10 @@ const NavigationBar = () => {
               {isAuth ? (
                 <>
                   <button
-                    onClick={() => dispatch(logout())}
+                    onClick={() => {
+                      dispatch(logout());
+                      dispatch(clearInfo());
+                    }}
                     className={addProductOpen ? styles.active : ""}
                   >
                     <span className="material-symbols-outlined">logout</span>
@@ -85,7 +96,7 @@ const NavigationBar = () => {
             <Link to="/cart">
               <div>
                 <p>Shopping Cart</p>
-                <h5>{isAuth ? cart.totalPrice : "0.00"}$</h5>
+                <h5>{isAuth ? totalPrice : "0.00"}$</h5>
               </div>
             </Link>
           </li>

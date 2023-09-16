@@ -101,8 +101,14 @@ const getAllProductsFilterByPrice = async (req, res, next) => {
   }
 };
 const getUserCart = async (req, res, next) => {
-  
-}
+  try {
+    const user = await User.findById(req.user.userId);
+    const updatedCart = await getUpdatedCart(user);
+    res.status(200).json(updatedCart);
+  } catch (error) {
+    next(error);
+  }
+};
 const addProduct = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -148,4 +154,5 @@ module.exports = {
   getAllProductsFilterByPrice,
   removeProduct,
   addToCart,
+  getUserCart,
 };

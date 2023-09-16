@@ -4,7 +4,7 @@ export const fetchData = async (
   dispatch,
   method,
   url,
-  page,
+  page = null,
   formData = null,
   type,
   token = null
@@ -34,7 +34,7 @@ export const fetchData = async (
       };
     }
     const body = method === "DELETE" ? null : formData;
-    console.log(headers, body);
+    console.log(headers, body, token);
     const response = await fetch(url, {
       method,
       body,
@@ -45,7 +45,7 @@ export const fetchData = async (
       throw errors;
     }
     const data = await response.json();
-    if (!formData) {
+    if (page && !formData) {
       data.currentPage = page;
     }
     return data;

@@ -27,9 +27,10 @@ const Products = () => {
   useEffect(() => {
     if (location.pathname === "/products/price/") {
       dispatch(getAllProductsFilterByPriceAction(page, price));
-    } else {
+    } else if (location.pathname === "/products") {
       dispatch(getAllProductsAction(page));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, dispatch, location]);
 
   useEffect(() => {

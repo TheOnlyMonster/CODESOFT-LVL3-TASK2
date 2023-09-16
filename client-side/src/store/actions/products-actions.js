@@ -3,7 +3,7 @@ import {
   addProduct,
   deleteProduct,
 } from "../slices/products-slice";
-import { addToCart } from "../slices/user-slice";
+import { addToCart, setCart } from "../slices/user-slice";
 import { setSuccessMessage } from "../slices/auth-slice";
 import { fetchData, apiUrl } from "../utils/fetchData";
 export const getAllProductsAction = (page) => {
@@ -88,6 +88,23 @@ export const addToCartAction = (page, quantity, token, product) => {
     if (data) {
       dispatch(addToCart(data));
       dispatch(setSuccessMessage("Product added to cart successfully"));
+    }
+  };
+};
+export const getUpdatedCartAction = (token) => {
+  return async (dispatch) => {
+    const data = await fetchData(
+      dispatch,
+      "GET",
+      `${apiUrl}/cart`,
+      null,
+      null,
+      "json",
+      token
+    );
+    //console.log(data, token);
+    if(data){
+      dispatch(setCart(data));
     }
   };
 };
