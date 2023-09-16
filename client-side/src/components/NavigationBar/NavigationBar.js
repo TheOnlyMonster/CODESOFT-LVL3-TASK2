@@ -9,6 +9,8 @@ import SignInForm from "../../pages/SignInForm/SignInForm";
 import { useEffect } from "react";
 import { logout, setUser, autoLogout } from "../../store/slices/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
+import { setTotalPrice } from "../../store/slices/user-slice";
+import { TextField } from "@mui/material";
 const NavigationBar = () => {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -30,9 +32,10 @@ const NavigationBar = () => {
     const remainingMilliseconds =
       new Date(expiryDate).getTime() - new Date().getTime();
     dispatch(setUser({ token, userId }));
+    dispatch(setTotalPrice(localStorage.getItem("totalPrice")));
     dispatch(autoLogout(remainingMilliseconds));
   }, [dispatch]);
-  const { isAuth } = useSelector((state) => state.authReducer);
+  const { isAuth, userId } = useSelector((state) => state.authReducer);
   const { cart, Fname, Lname } = useSelector((state) => state.userReducer);
   const { errors } = useSelector((state) => state.authReducer);
   useEffect(() => {
@@ -76,19 +79,21 @@ const NavigationBar = () => {
           </ul>
         </header>
         <ul className={styles.search}>
-          <input type="search" placeholder="Search.."></input>
+          <TextField type="search" placeholder="Search..." />
           <li>
             <span className="material-symbols-outlined">shopping_cart</span>
-            <div>
-              <p>Shopping Cart</p>
-              <h4>{isAuth ? cart.totalPrice : "0.00"}$</h4>
-            </div>
+            <Link to="/cart">
+              <div>
+                <p>Shopping Cart</p>
+                <h5>{isAuth ? cart.totalPrice : "0.00"}$</h5>
+              </div>
+            </Link>
           </li>
           <li>
             <span className="material-symbols-outlined">call</span>
             <div>
               <p>Call Us</p>
-              <h4>+20 111 399 3807</h4>
+              <h6>+20 111 399 3807</h6>
             </div>
           </li>
         </ul>
@@ -123,7 +128,7 @@ const NavigationBar = () => {
                 open={addProductOpen}
               />
             )}
-            { !isAuth && signInOpen && (
+            {!isAuth && signInOpen && (
               <SignInForm handleClose={handleSignInClose} open={signInOpen} />
             )}
           </li>

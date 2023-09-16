@@ -34,6 +34,7 @@ const authSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("userId");
       localStorage.removeItem("expiryDate");
+      localStorage.removeItem("totalPrice");
     },
     autoLogout: (state, action) => {
       setTimeout(() => {
@@ -43,6 +44,7 @@ const authSlice = createSlice({
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("expiryDate");
+        localStorage.removeItem("totalPrice");
       }, action.payload);
     },
     setError: (state, action) => {

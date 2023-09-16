@@ -100,6 +100,9 @@ const getAllProductsFilterByPrice = async (req, res, next) => {
     next(error);
   }
 };
+const getUserCart = async (req, res, next) => {
+  
+}
 const addProduct = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
