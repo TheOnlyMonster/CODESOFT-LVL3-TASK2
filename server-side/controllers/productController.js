@@ -175,6 +175,14 @@ const fetchProducts = async (skip, minPrice = null, maxPrice = null) => {
 
   return { products, productsCount, lowestPrice, highestPrice };
 };
+const getOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find({ userId: req.user.userId });
+    res.status(200).json(orders);
+  } catch (error) {
+    next(error);
+  }
+}
 module.exports = {
   getAllProducts,
   addProduct,
@@ -183,4 +191,5 @@ module.exports = {
   addToCart,
   getUserCart,
   postCheckout,
+  getOrders
 };

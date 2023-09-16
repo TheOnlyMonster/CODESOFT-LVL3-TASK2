@@ -1,0 +1,74 @@
+/* Orders.module.css */
+
+.ordersContainer {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.orderInfo{
+  display: flex;
+  justify-content: space-between;
+  background-color: #f9fafb;
+  padding: 20px;
+}
+.orderItem {
+  border: 1px solid #ddd;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.orderDetails {
+  display: grid;
+  gap: 20px;
+}
+
+.orderSection {
+  margin-right: 20px;
+}
+
+.infoLabel {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.orderLink {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.infoValue {
+  font-size: 14px;
+}
+
+.productInfo {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.productImage img {
+  max-width: 100px;
+  max-height: 100px;
+  margin-right: 20px;
+}
+
+.productTitle {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.productLink {
+  text-decoration: none;
+  color: #333;
+}
+
+.productPrice {
+  font-weight: bold;
+}

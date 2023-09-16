@@ -2,12 +2,16 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "userReducer",
   initialState: {
+    orders: [],
     cart: { items: [] },
     totalPrice: 0.0,
     Fname: undefined,
     Lname: undefined,
   },
   reducers: {
+    setUserOrders: (state, action) => {
+      state.orders = action.payload;
+    },
     addToCart: (state, action) => {
       state.totalPrice = action.payload.totalPrice;
       localStorage.setItem("totalPrice", action.payload.totalPrice);
@@ -46,6 +50,7 @@ const userSlice = createSlice({
     },
     clearInfo: (state) => {
       state.cart.items = [];
+      state.orders = [];
       state.totalPrice = 0.0;
       state.Fname = undefined;
       state.Lname = undefined;
@@ -56,6 +61,7 @@ const userSlice = createSlice({
     autoClearInfo: (state, action) => {
       setTimeout(() => {
         state.cart.items = [];
+        state.orders = [];
         state.totalPrice = 0.0;
         state.Fname = undefined;
         state.Lname = undefined;
@@ -79,6 +85,7 @@ export const {
   clearInfo,
   autoClearInfo,
   updateQuantity,
+  setUserOrders
 } = userSlice.actions;
 
 export default userSlice;

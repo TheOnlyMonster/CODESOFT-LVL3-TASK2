@@ -112,4 +112,5 @@ router.post(
   productController.postCheckout
 );
 router.get("/cart", isAuth, productController.getUserCart);
+router.get("/orders", isAuth, productController.getOrders);
 module.exports = router;

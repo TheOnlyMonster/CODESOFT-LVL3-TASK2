@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   clearInfo,
   setUserFromLocalStorage,
-  autoClearInfo
+  autoClearInfo,
 } from "../../store/slices/user-slice";
 import { TextField } from "@mui/material";
 const NavigationBar = () => {
@@ -123,7 +123,11 @@ const NavigationBar = () => {
             <Link to="/products">Products</Link>
           </li>
           <li>About Us</li>
-          {isAuth && <li>Orders</li>}
+          {isAuth && (
+            <li className={location.pathname === "/orders" ? styles.active : ""}>
+              <Link to="/orders">Orders</Link>
+            </li>
+          )}
           <li>
             {isAuth && (
               <button

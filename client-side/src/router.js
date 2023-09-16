@@ -3,6 +3,7 @@ import Products from "./pages/Products/Products";
 import NavigationBar from "./components/NavigationBar/NavigationBar";
 import ErrorPage from "./pages/ErrorPage.js";
 import Cart from "./pages/Cart/Cart.js";
+import Orders from "./pages/Orders/Orders";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -15,12 +16,16 @@ const router = createBrowserRouter([
       },
       {
         path: "products/price",
-        element: <Products />
+        element: <Products />,
       },
       {
         path: "cart",
         element: <Cart />,
-      }
+      },
+      {
+        path: "orders",
+        element: <Orders />,
+      },
     ],
   },
 ]);
