@@ -91,6 +91,23 @@ export const addToCartAction = (page, quantity, token, product) => {
     }
   };
 };
+export const checkoutAction = (cart, token) => {
+  return async (dispatch) => {
+    const data = await fetchData(
+      dispatch,
+      "POST",
+      `${apiUrl}/checkout`,
+      null,
+      cart,
+      "json",
+      token
+    );
+    if (data) {
+      dispatch(setSuccessMessage("Order placed successfully"));
+      dispatch(setCart({items: [], totalPrice: 0}));
+    }
+  };
+}
 export const getUpdatedCartAction = (token) => {
   return async (dispatch) => {
     const data = await fetchData(

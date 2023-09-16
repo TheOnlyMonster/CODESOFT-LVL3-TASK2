@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Container from "../../components/Container/Container";
 import "./Cart.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getUpdatedCartAction } from "../../store/actions/products-actions";
+import { checkoutAction, getUpdatedCartAction } from "../../store/actions/products-actions";
 import CartItem from "../../components/CartItem/CartItem";
 const Cart = () => {
   const dispatch = useDispatch();
@@ -15,6 +15,10 @@ const Cart = () => {
     if(!isAuth) return
     dispatch(getUpdatedCartAction(localStorage.getItem("token")));
   }, [dispatch, isAuth]);
+  const formSubmitHandler = (e) => {
+    e.preventDefault();
+    dispatch(checkoutAction(JSON.stringify(cart), localStorage.getItem("token")));
+  }
   return (
     <Container>
       {cart.items.length === 0 && !isLoading ? (
@@ -43,14 +47,13 @@ const Cart = () => {
               <div className="col">ITEMS {cart.items.length}</div>
               <div className="col text-right">&euro; {totalPrice}</div>
             </div>
-            <form>
+            <form onSubmit={formSubmitHandler}>
               <p>SHIPPING</p>
               <select>
                 <option className="text-muted">
                   Standard-Delivery- &euro;5.00
                 </option>
               </select>
-
               <div
                 className="row"
                 style={{
@@ -61,7 +64,7 @@ const Cart = () => {
                 <div className="col">TOTAL PRICE</div>
                 <div className="col text-right">&euro; {totalPrice + 5}</div>
               </div>
-              <button className="checkout-button">CHECKOUT</button>
+              <button type="submit" className="checkout-button">CHECKOUT</button>
             </form>
           </div>
         </div>

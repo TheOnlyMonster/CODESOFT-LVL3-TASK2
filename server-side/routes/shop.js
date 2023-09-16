@@ -86,9 +86,30 @@ router.delete(
   ],
   productController.removeProduct
 );
-router.get(
-  "/cart",
+router.post(
+  "/checkout",
   isAuth,
-  productController.getUserCart
-)
+  [
+    body("items")
+      .not()
+      .isEmpty()
+      .withMessage("Cart is required")
+      .custom(async (value, { req }) => {
+        const items = value;
+        if (!Array.isArray(items)) throw new Error("Cart is not an array");
+        if (items.length === 0) throw new Error("Cart is empty");
+        for (const item of items) {
+          if (!item._id) throw new Error("Product ID is required");
+          const product = await Product.findById(item?._id);
+          if (!product) throw new Error("Product not found");
+          const quantity = +item?.quantity;
+          if (!quantity) throw new Error("Quantity is required");
+          if (quantity <= 0) throw new Error("Quantity must be greater than 0");
+        }
+        return true;
+      }),
+  ],
+  productController.postCheckout
+);
+router.get("/cart", isAuth, productController.getUserCart);
 module.exports = router;

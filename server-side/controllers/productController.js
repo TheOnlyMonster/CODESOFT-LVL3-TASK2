@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const PER_PAGE = 10;
 const User = require("../models/user");
+const Order = require("../models/order");
 const Product = require("../models/product");
 const getUpdatedCart = require("../utils/getUpdatedCart");
 const getAllProducts = async (req, res, next) => {
@@ -16,6 +17,32 @@ const getAllProducts = async (req, res, next) => {
       productsCount,
       highestPrice,
       lowestPrice,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+const postCheckout = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = errors.array()[0];
+    error.statusCode = 422;
+    return next(error);
+  }
+  try {
+    const items = req.body.items;
+    const user = await User.findById(req.user.userId);
+    const updatedCart = await getUpdatedCart(items, "_id");
+    const order = new Order({
+      userId: user._id,
+      products: updatedCart.items,
+      totalPrice: updatedCart.totalPrice,
+    });
+    await order.save();
+    user.cart.items = [];
+    await user.save();
+    res.status(200).json({
+      order,
     });
   } catch (error) {
     next(error);
@@ -75,7 +102,7 @@ const addToCart = async (req, res, next) => {
       });
     }
     await user.save();
-    const updatedCart = await getUpdatedCart(user);
+    const updatedCart = await getUpdatedCart(user.cart.items, "productId");
     res.status(200).json(updatedCart);
   } catch (error) {
     next(error);
@@ -103,7 +130,7 @@ const getAllProductsFilterByPrice = async (req, res, next) => {
 const getUserCart = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.userId);
-    const updatedCart = await getUpdatedCart(user);
+    const updatedCart = await getUpdatedCart(user.cart.items, "productId");
     res.status(200).json(updatedCart);
   } catch (error) {
     next(error);
@@ -155,4 +182,5 @@ module.exports = {
   removeProduct,
   addToCart,
   getUserCart,
+  postCheckout,
 };
