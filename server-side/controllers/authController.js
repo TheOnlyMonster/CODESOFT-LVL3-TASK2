@@ -36,7 +36,7 @@ const signIn = async (req, res, next) => {
         expiresIn: "1h",
       }
     );
-    const updatedCart = await getUpdatedCart(user);
+    const updatedCart = await getUpdatedCart(user.cart.items, "productId");
     res.status(200).json({
       token,
       userId: user._id.toString(),
