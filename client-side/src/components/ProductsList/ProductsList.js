@@ -82,14 +82,6 @@ const ProductList = ({ allProducts, setPrice, children, price}) => {
             </Typography>
           </div>
         </li>
-        <li>
-          <h2>Filter by category</h2>
-          <ul className={styles.category}>
-            <li>Category 1</li>
-            <li>Category 2</li>
-            <li>Category 3</li>
-          </ul>
-        </li>
       </ul>
       {products.length === 0 ? (
         <p className={styles.p}>No products found</p>
