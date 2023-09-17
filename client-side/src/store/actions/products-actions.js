@@ -119,7 +119,6 @@ export const getUpdatedCartAction = (token) => {
       "json",
       token
     );
-    //console.log(data, token);
     if (data) {
       dispatch(setCart(data));
     }
@@ -142,3 +141,20 @@ export const getUserOrdersAction = (token) => {
     }
   };
 };
+
+export const updateCartAction = (token, cart) => {
+  return async (dispatch) => {
+    const data = await fetchData(
+      dispatch,
+      "POST",
+      `${apiUrl}/update-cart`,
+      null,
+      cart,
+      "json",
+      token
+    );
+    if (data) {
+      dispatch(setSuccessMessage("Cart updated successfully"));
+    }
+  };
+}

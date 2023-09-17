@@ -21,7 +21,6 @@ const NavigationBar = () => {
   const [addProductOpen, handleAddProductClickOpen, handleAddProductClose] =
     usePopUp();
   const [signInOpen, handleSignInClickOpen, handleSignInClose] = usePopUp();
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     const expiryDate = localStorage.getItem("expiryDate");
@@ -41,11 +40,13 @@ const NavigationBar = () => {
     dispatch(autoLogout(remainingMilliseconds));
     dispatch(autoClearInfo(remainingMilliseconds));
   }, [dispatch]);
+
+
   const { isAuth } = useSelector((state) => state.authReducer);
   const { totalPrice, Fname, Lname } = useSelector(
     (state) => state.userReducer
-  );
-  const { errors } = useSelector((state) => state.authReducer);
+    );
+    const { errors } = useSelector((state) => state.authReducer);
   useEffect(() => {
     if (errors?.statusCode === 401) {
       handleSignInClickOpen();

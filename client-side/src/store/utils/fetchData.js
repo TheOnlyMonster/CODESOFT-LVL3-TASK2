@@ -34,7 +34,6 @@ export const fetchData = async (
       };
     }
     const body = method === "DELETE" ? null : formData;
-    console.log(headers, body, token);
     const response = await fetch(url, {
       method,
       body,

@@ -3,7 +3,7 @@ const userSlice = createSlice({
   name: "userReducer",
   initialState: {
     orders: [],
-    cart: { items: [] },
+    cart: { items: undefined },
     totalPrice: 0.0,
     Fname: undefined,
     Lname: undefined,
@@ -49,25 +49,19 @@ const userSlice = createSlice({
       localStorage.setItem("totalPrice", action.payload.totalPrice);
     },
     clearInfo: (state) => {
-      state.cart.items = [];
+      state.cart.items = undefined;
       state.orders = [];
       state.totalPrice = 0.0;
       state.Fname = undefined;
       state.Lname = undefined;
+      state.cart.isUpdated = false;
       localStorage.removeItem("totalPrice");
       localStorage.removeItem("Fname");
       localStorage.removeItem("Lname");
     },
     autoClearInfo: (state, action) => {
       setTimeout(() => {
-        state.cart.items = [];
-        state.orders = [];
-        state.totalPrice = 0.0;
-        state.Fname = undefined;
-        state.Lname = undefined;
-        localStorage.removeItem("totalPrice");
-        localStorage.removeItem("Fname");
-        localStorage.removeItem("Lname");
+        clearInfo(state);
       }, action.payload);
     },
     setUserFromLocalStorage: (state) => {
@@ -85,7 +79,7 @@ export const {
   clearInfo,
   autoClearInfo,
   updateQuantity,
-  setUserOrders
+  setUserOrders,
 } = userSlice.actions;
 
 export default userSlice;

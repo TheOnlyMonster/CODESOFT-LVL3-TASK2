@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateQuantity } from "../../store/slices/user-slice";
-const CartItem = ({ item, getImageSrc }) => {
+import getImageSrc from "../../utils/getImageSrc";
+const CartItem = ({ item, setIsUpdated }) => {
   const [quantity, setQuantity] = useState(item.quantity);
   const dispatch = useDispatch();
   useEffect(() => {
+    if(quantity === item.quantity) return;
     dispatch(updateQuantity({ _id: item._id, quantity }));
-  }, [quantity, dispatch, item._id, item]);
+    setIsUpdated(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quantity, dispatch]);
   return (
     <li className="cart-item" key={item._id}>
       <img src={getImageSrc(item.image)} alt="Shirt" />

@@ -7,11 +7,9 @@ const getUpdatedCart = require("../utils/getUpdatedCart");
 const getAllProducts = async (req, res, next) => {
   const page = req.query.page || 1;
   const skip = (page - 1) * PER_PAGE;
-
   try {
     const { products, productsCount, lowestPrice, highestPrice } =
       await fetchProducts(skip);
-
     res.status(200).json({
       products,
       productsCount,
@@ -22,6 +20,30 @@ const getAllProducts = async (req, res, next) => {
     next(error);
   }
 };
+const updateCart = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = errors.array()[0];
+    error.statusCode = 422;
+    return next(error);
+  }
+  try {
+    const items = req.body.items;
+    const user = await User.findById(req.user.userId);
+    const updatedItems = [];
+    for(const item of items){
+      updatedItems.push({
+        productId: item._id,
+        quantity: item.quantity
+      })
+    }
+    user.cart.items = updatedItems;
+    await user.save();
+    res.status(200).json("Cart updated");
+  } catch (error) {
+    next(error);
+  }
+}
 const postCheckout = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -191,5 +213,6 @@ module.exports = {
   addToCart,
   getUserCart,
   postCheckout,
-  getOrders
+  getOrders,
+  updateCart
 };
