@@ -8,6 +8,7 @@ const PaginationList = (props) => {
   const lastPage = Math.ceil(props.productsCount / PER_PAGE);
   const currentPage = props.currentPage;
   const location = useLocation();
+  const query = props.query ? `&text=${props.query}` : ""
   return (
     <Pagination
       className={styles.pagination}
@@ -16,7 +17,7 @@ const PaginationList = (props) => {
       renderItem={(item) => (
         <PaginationItem
           component={Link}
-          to={`${location.pathname}?page=${item.page}`}
+          to={`${location.pathname}?page=${item.page}${query}`}
           {...item}
         />
       )}

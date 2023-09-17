@@ -20,6 +20,29 @@ const getAllProducts = async (req, res, next) => {
     next(error);
   }
 };
+const searchProducts = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = errors.array()[0];
+    error.statusCode = 422;
+    return next(error);
+  }
+  const page = req.query.page || 1;
+  const skip = (page - 1) * PER_PAGE;
+  const searchValue = req.params.searchValue;
+  try {
+    const { products, productsCount, lowestPrice, highestPrice } =
+      await fetchProducts(skip, null, null, searchValue);
+    res.status(200).json({
+      products,
+      productsCount,
+      highestPrice,
+      lowestPrice,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 const updateCart = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -31,11 +54,11 @@ const updateCart = async (req, res, next) => {
     const items = req.body.items;
     const user = await User.findById(req.user.userId);
     const updatedItems = [];
-    for(const item of items){
+    for (const item of items) {
       updatedItems.push({
         productId: item._id,
-        quantity: item.quantity
-      })
+        quantity: item.quantity,
+      });
     }
     user.cart.items = updatedItems;
     await user.save();
@@ -43,7 +66,7 @@ const updateCart = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
+};
 const postCheckout = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -175,7 +198,16 @@ const addProduct = async (req, res, next) => {
     next(error);
   }
 };
-const fetchProducts = async (skip, minPrice = null, maxPrice = null) => {
+const fetchProducts = async (
+  skip,
+  minPrice = null,
+  maxPrice = null,
+  searchText = null
+) => {
+  var regexSearch;
+  if (searchText) {
+    regexSearch = new RegExp(searchText, "i");
+  }
   const [lowestPriceProduct, highestPriceProduct] = await Promise.all([
     Product.findOne().sort({ price: 1 }),
     Product.findOne().sort({ price: -1 }),
@@ -185,16 +217,15 @@ const fetchProducts = async (skip, minPrice = null, maxPrice = null) => {
   const highestPrice = highestPriceProduct ? highestPriceProduct.price : 100;
 
   const productsQuery =
-    minPrice && maxPrice
+    minPrice && maxPrice && !searchText
       ? {
           price: { $gte: minPrice, $lte: maxPrice },
         }
+      : searchText
+      ? { title: { $regex: regexSearch } }
       : {};
-
   const products = await Product.find(productsQuery).skip(skip).limit(PER_PAGE);
-
   const productsCount = await Product.countDocuments(productsQuery);
-
   return { products, productsCount, lowestPrice, highestPrice };
 };
 const getOrders = async (req, res, next) => {
@@ -204,7 +235,7 @@ const getOrders = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
+};
 module.exports = {
   getAllProducts,
   addProduct,
@@ -214,5 +245,6 @@ module.exports = {
   getUserCart,
   postCheckout,
   getOrders,
-  updateCart
+  updateCart,
+  searchProducts,
 };

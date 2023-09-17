@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAllProductsAction,
   getAllProductsFilterByPriceAction,
+  getAllProductsFilterBySearchAction,
 } from "../../store/actions/products-actions";
 const Products = () => {
   const dispatch = useDispatch();
@@ -23,14 +24,16 @@ const Products = () => {
   }
   const query = useQuery();
   const page = +query.get("page") || 1;
-  
+
   useEffect(() => {
     if (location.pathname === "/products/price/") {
       dispatch(getAllProductsFilterByPriceAction(page, price));
     } else if (location.pathname === "/products") {
       dispatch(getAllProductsAction(page));
+    } else if (location.pathname.includes("/products/search")) {
+      dispatch(getAllProductsFilterBySearchAction(page, query.get("text")));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, dispatch, location]);
 
   useEffect(() => {
@@ -75,6 +78,7 @@ const Products = () => {
               productsCount={productsCount}
               currentPage={currentPage}
               pageItems={10}
+              query={query.get("text")}
             />
           )}
         </Transition>

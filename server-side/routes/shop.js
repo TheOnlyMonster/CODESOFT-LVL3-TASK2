@@ -20,7 +20,24 @@ const cartValidation = async (isCheckout, value, { req }) => {
 router.get("/products", productController.getAllProducts);
 router.get(
   "/products/price/:price",
+  [
+    param("price")
+      .isNumeric()
+      .withMessage("Price must be a number")
+      .isLength({ min: 1 })
+      .withMessage("Price must be at least 1 number"),
+  ],
   productController.getAllProductsFilterByPrice
+);
+router.get(
+  "/products/search/:searchValue",
+  [
+    param("searchValue")
+      .not()
+      .isEmpty()
+      .withMessage("Search value is required"),
+  ],
+  productController.searchProducts
 );
 router.post(
   "/add-product",
@@ -117,12 +134,11 @@ router.post(
 router.post(
   "/update-cart",
   isAuth,
-  body("items")
-    .custom(async (value, { req }) => {
-      const res = await cartValidation(false, value, { req });
-      if (res instanceof Error) throw res;
-      return true;
-    }),
+  body("items").custom(async (value, { req }) => {
+    const res = await cartValidation(false, value, { req });
+    if (res instanceof Error) throw res;
+    return true;
+  }),
   productController.updateCart
 );
 router.get("/cart", isAuth, productController.getUserCart);

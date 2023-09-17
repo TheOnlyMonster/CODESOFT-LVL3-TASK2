@@ -37,7 +37,21 @@ export const getAllProductsFilterByPriceAction = (page, price) => {
     }
   };
 };
-
+export const getAllProductsFilterBySearchAction = (page, searchValue) => {
+  return async (dispatch) => {
+    const data = await fetchData(
+      dispatch,
+      "GET",
+      `${apiUrl}/products/search/${searchValue}?page=${page}`,
+      page,
+      null,
+      "json"
+    );
+    if (data) {
+      dispatch(setProductData(data));
+    }
+  };
+};
 export const addProductAction = (page, product, token) => {
   return async (dispatch) => {
     const data = await fetchData(
@@ -157,4 +171,4 @@ export const updateCartAction = (token, cart) => {
       dispatch(setSuccessMessage("Cart updated successfully"));
     }
   };
-}
+};

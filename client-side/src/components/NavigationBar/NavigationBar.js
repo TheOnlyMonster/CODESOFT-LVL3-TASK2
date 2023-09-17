@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Container from "../Container/Container";
 import styles from "./NavigationBar.module.css";
 import Divider from "@mui/material/Divider";
@@ -6,7 +6,7 @@ import AddProduct from "../../pages/AddProduct/AddProduct";
 import usePopUp from "../../hooks/usePopUp";
 import Notification from "../Notification/Notification";
 import SignInForm from "../../pages/SignInForm/SignInForm";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { logout, setUser, autoLogout } from "../../store/slices/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,8 +16,10 @@ import {
 } from "../../store/slices/user-slice";
 import { TextField } from "@mui/material";
 const NavigationBar = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const [searchValue, setSearchValue] = useState("");
   const [addProductOpen, handleAddProductClickOpen, handleAddProductClose] =
     usePopUp();
   const [signInOpen, handleSignInClickOpen, handleSignInClose] = usePopUp();
@@ -41,12 +43,11 @@ const NavigationBar = () => {
     dispatch(autoClearInfo(remainingMilliseconds));
   }, [dispatch]);
 
-
   const { isAuth } = useSelector((state) => state.authReducer);
   const { totalPrice, Fname, Lname } = useSelector(
     (state) => state.userReducer
-    );
-    const { errors } = useSelector((state) => state.authReducer);
+  );
+  const { errors } = useSelector((state) => state.authReducer);
   useEffect(() => {
     if (errors?.statusCode === 401) {
       handleSignInClickOpen();
@@ -91,7 +92,16 @@ const NavigationBar = () => {
           </ul>
         </header>
         <ul className={styles.search}>
-          <TextField type="search" placeholder="Search..." />
+          <TextField
+            type="search"
+            placeholder="Search..."
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" && searchValue) {
+                navigate(`products/search?text=${searchValue}&page=1`);
+              }
+            }}
+          />
           <li>
             <span className="material-symbols-outlined">shopping_cart</span>
             <Link to="/cart">
@@ -110,9 +120,6 @@ const NavigationBar = () => {
           </li>
         </ul>
         <ul className={styles.nav}>
-          <li className={location.pathname === "/" ? styles.active : ""}>
-            <Link to="/">Home</Link>
-          </li>
           <li
             className={
               location.pathname === "/products" ||
@@ -123,9 +130,10 @@ const NavigationBar = () => {
           >
             <Link to="/products">Products</Link>
           </li>
-          <li>About Us</li>
           {isAuth && (
-            <li className={location.pathname === "/orders" ? styles.active : ""}>
+            <li
+              className={location.pathname === "/orders" ? styles.active : ""}
+            >
               <Link to="/orders">Orders</Link>
             </li>
           )}
